@@ -106,7 +106,7 @@ class SettingsGetterFile(SettingsGetter):
             super().__init__()
         except NotImplementedError:
             pass
-        self.module = import_module("config."+filename)
+        self.module = import_module("config."+filename[0].upper()+filename[1:].lower())
 
     def _get(self, key):
         if hasattr(self.module, key):
