@@ -67,7 +67,7 @@ class InterfaceText(Interface):
 class TextTestCase(TestCase):
     def __init__(self, *positional, **keyword):
         super().__init__(*positional, **keyword)
-        self.last_output = ""
+        self.last_output = None
 
     # noinspection PyUnusedLocal
     def catchOutput(self, value, end=None):

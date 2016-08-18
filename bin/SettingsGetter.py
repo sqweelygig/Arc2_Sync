@@ -3,6 +3,7 @@ from copy import copy
 from unittest import TestCase
 # noinspection PyUnresolvedReferences
 from Interface import InterfaceText
+from importlib import import_module
 
 
 class SettingsGetter:
@@ -99,6 +100,21 @@ class SettingsGetterInterface(SettingsGetter):
         return [self.interface.get(key)]
 
 
+class SettingsGetterFile(SettingsGetter):
+    def __init__(self, filename="main"):
+        try:
+            super().__init__()
+        except NotImplementedError:
+            pass
+        self.module = import_module("config."+filename)
+
+    def _get(self, key):
+        if hasattr(self.module, key):
+            return getattr(self.module, key)
+        else:
+            raise KeyError
+
+
 class ArgsTestCase(TestCase):
     def setUp(self):
         self.settings_getter = SettingsGetterArgs(
@@ -134,6 +150,14 @@ class InterfaceTestCase(TestCase):
             {"test": ["standard"], "password": ["obfuscated"]},
             self.settings_getter.get_many(("test", "password"))
         )
+
+
+class FileTestCase(TestCase):
+    def setUp(self):
+        self.settings_getter = SettingsGetterFile("test")
+
+    def testGet(self):
+        self.assertEqual(["value"], self.settings_getter.get("key"))
 
 
 class CombinerTestCase(TestCase):
