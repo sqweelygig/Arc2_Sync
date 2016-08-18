@@ -24,13 +24,13 @@ class SettingsGetter:
 
     def get_many(self, keys):
         out = {}
-        for key in keys:
+        for key in iter(keys):
             out[key] = self.get(key)
         return out
 
     def get_cache(self):
         out = {}
-        for key, value in self.cache:
+        for key, value in iter(self.cache):
             out[key] = copy(value)
         return out
 
@@ -53,7 +53,7 @@ class SettingsGetterArgs(SettingsGetter):
     def _process_arguments(arguments):
         out = {}
         key = None
-        for value in arguments[1:]:
+        for value in iter(arguments[1:]):
             if value[0] == '-':
                 key = value[1:]
             elif key in out:
@@ -76,7 +76,7 @@ class SettingsGetterCombiner(SettingsGetter):
 
     def _get(self, key):
         out = None
-        for source in self.sources:
+        for source in iter(self.sources):
             if out is None:
                 try:
                     out = source.get(key)
