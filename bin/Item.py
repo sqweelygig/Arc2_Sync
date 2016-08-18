@@ -68,7 +68,7 @@ class Item:
 class FactoryTestCase(TestCase):
     def setUp(self):
         self.factory_test = Factory("test")
-        self.factory_duff = Factory("blahblahblah")
+        self.factory_duff = Factory("invalid")
 
     def testCorrectItem(self):
         self.assertEqual("ItemTest", self.factory_test.item_class.__name__)
