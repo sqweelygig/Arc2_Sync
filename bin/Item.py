@@ -1,4 +1,3 @@
-from importlib.util import find_spec
 from importlib import import_module
 from unittest import TestCase
 
@@ -17,10 +16,10 @@ class Factory:
     @staticmethod
     def _find_item_class(item_name):
         name = "Item" + item_name[0].upper() + item_name[1:].lower()
-        if find_spec("lib."+name) is not None:
-            m = import_module("lib."+name)
+        try:
+            m = import_module("lib."+name+'.'+name)
             i = getattr(m, name) if hasattr(m, name) else Item
-        else:
+        except ImportError:
             i = Item
         return i
 
