@@ -1,0 +1,8 @@
+-sync students -from sims -to google here -mode preview
+MEANS
+Get all the requisites for sims, google & here
+Get a list of students from sims
+For each of these students
+    put it into google
+    put it into here
+Models may ask sync_items for fields

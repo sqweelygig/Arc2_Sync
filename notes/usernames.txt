@@ -1,0 +1,15 @@
+# TODO: Consider the following crazy username idea
+Crazy Idea
+<forenames> = abbreviate right most first
+<surnames> = abbreviate left most first
+cartesian product these together
+find the longest that is less than 13 (11) characters
+eg:
+Bay-Leigh Philips-Waterman
+==> forenames = bay-leigh, bay-l, b-l
+==> surnames = philips-waterman, p-waterman, p-w
+==> suggestions = bay-leigh.philips-waterman, bay-l.philips-waterman, b-l.philips-waterman,
+                  bay-leigh.p-waterman      , bay-l.p-waterman      , b-l.p-waterman,
+                  bay-leigh.p-w             , bay-l.p-w             , b-l.p-w
+==> filtered = bay-leigh.p-w, bay-l.p-w, b-l.p-w
+==> ordered = bay-leigh.p-w, bay-l.p-w, b-l.p-w
