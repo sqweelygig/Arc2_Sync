@@ -154,7 +154,7 @@ class InterfaceTestCase(TestCase):
 
 class FileTestCase(TestCase):
     def setUp(self):
-        self.settings_getter = SettingsGetterFile("test")
+        self.settings_getter = SettingsGetterFile("Test")
 
     def testGet(self):
         self.assertEqual(["value"], self.settings_getter.get("key"))
