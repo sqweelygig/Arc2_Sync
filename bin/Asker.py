@@ -6,7 +6,7 @@ from Interface import InterfaceText
 from importlib import import_module
 
 
-class SettingsGetter:
+class Asker:
     """
     A settings object is for gathering settings from one of any number of sources
     A settings class will contain methods:
@@ -41,7 +41,7 @@ class SettingsGetter:
         raise NotImplementedError()
 
 
-class SettingsGetterArgs(SettingsGetter):
+class AskerArgs(Asker):
     def __init__(self, arguments=None):
         try:
             super().__init__()
@@ -66,7 +66,7 @@ class SettingsGetterArgs(SettingsGetter):
         return self.args[key]
 
 
-class SettingsGetterCombiner(SettingsGetter):
+class AskerCombiner(Asker):
     def __init__(self, sources):
         try:
             super().__init__()
@@ -88,7 +88,7 @@ class SettingsGetterCombiner(SettingsGetter):
             return out
 
 
-class SettingsGetterInterface(SettingsGetter):
+class AskerInterface(Asker):
     def __init__(self, interface):
         try:
             super().__init__()
@@ -100,7 +100,7 @@ class SettingsGetterInterface(SettingsGetter):
         return [self.interface.get(key)]
 
 
-class SettingsGetterFile(SettingsGetter):
+class AskerFile(Asker):
     def __init__(self, filename="main"):
         try:
             super().__init__()
@@ -117,7 +117,7 @@ class SettingsGetterFile(SettingsGetter):
 
 class ArgsTestCase(TestCase):
     def setUp(self):
-        self.settings_getter = SettingsGetterArgs(
+        self.settings_getter = AskerArgs(
             arguments=("script.py", "-test", "this", "-second", "that", "-array", "first", "second")
         )
 
@@ -139,7 +139,7 @@ class InterfaceTestCase(TestCase):
             input_obfuscated=lambda: "obfuscated",
             output_standard=lambda x: x
         )
-        self.settings_getter = SettingsGetterInterface(interface=interface)
+        self.settings_getter = AskerInterface(interface=interface)
 
     def testGet(self):
         self.assertEqual(["standard"], self.settings_getter.get("test"))
@@ -154,7 +154,7 @@ class InterfaceTestCase(TestCase):
 
 class FileTestCase(TestCase):
     def setUp(self):
-        self.settings_getter = SettingsGetterFile("Test")
+        self.settings_getter = AskerFile("Test")
 
     def testGet(self):
         self.assertEqual(["value"], self.settings_getter.get("key"))
@@ -162,9 +162,9 @@ class FileTestCase(TestCase):
 
 class CombinerTestCase(TestCase):
     def setUp(self):
-        a = SettingsGetterArgs(arguments=("script.py", "-a", "a"))
-        b = SettingsGetterArgs(arguments=("script.py", "-b", "b"))
-        self.settings_getter = SettingsGetterCombiner(sources=(a, b))
+        a = AskerArgs(arguments=("script.py", "-a", "a"))
+        b = AskerArgs(arguments=("script.py", "-b", "b"))
+        self.settings_getter = AskerCombiner(sources=(a, b))
 
     def testGet(self):
         self.assertEqual(["a"], self.settings_getter.get("a"))
