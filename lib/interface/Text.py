@@ -12,7 +12,7 @@ class Text(InterfaceAntiWhizz):
     Can interact with other text based methods if setup correctly
     """
 
-    input_standard = print
+    input_standard = input
     input_obfuscated = partial(getpass, "")
     output_standard = print
     console_width = 60

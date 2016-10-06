@@ -5,7 +5,7 @@ from bin.Questioner import Questioner
 
 
 class File(Questioner):
-    def __init__(self, filename="main"):
+    def __init__(self, filename="default"):
         try:
             super().__init__()
         except NotImplementedError:

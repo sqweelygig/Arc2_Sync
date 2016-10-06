@@ -1,3 +1,4 @@
+import re
 
 
 class Questioner:
@@ -11,9 +12,11 @@ class Questioner:
         self.cache = {}
         raise NotImplementedError()
 
-    def get(self, key):
+    def get(self, key, criteria='^.+$'):
         if key not in self.cache:
             self.cache[key] = self._get(key)
+        if self.cache[key] is None or re.search(criteria, self.cache[key]) is None:
+            raise KeyError()
         return self.cache[key]
 
     def get_many(self, keys):

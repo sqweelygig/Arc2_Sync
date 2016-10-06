@@ -11,6 +11,9 @@ class Combiner(Questioner):
             pass
         self.sources = sources
 
+    def add(self, source):
+        self.sources.append(source)
+
     def _get(self, key):
         out = None
         for source in iter(self.sources):
