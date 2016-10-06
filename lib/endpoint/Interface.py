@@ -1,10 +1,8 @@
 from bin.Endpoint import Endpoint
 
-requirements = ["username", "password"]
 
-
-class Sims(Endpoint):
-    def __init__(self, interface, username, password):
+class Interface(Endpoint):
+    def __init__(self, interface):
         try:
             super().__init__(interface)
         except NotImplementedError:

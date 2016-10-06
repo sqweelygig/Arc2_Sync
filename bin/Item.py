@@ -1,3 +1,8 @@
+class Item:
+    def __init__(self):
+        raise NotImplementedError()
+
+
 # from importlib import import_module
 # from unittest import TestCase
 #

@@ -1,3 +1,9 @@
+class Endpoint:
+    def __init__(self, interface):
+        self.interface = interface
+        raise NotImplementedError()
+
+
 # from functools import partial
 # from datetime import datetime
 # from unittest import TestCase

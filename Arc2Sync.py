@@ -13,30 +13,34 @@ class Arc2Sync:
         settings = Combiner(sources=[Args(), File()])
 
         # Build the interface specified
-        interface = self.get_class("interface", settings.get("interface"))()
+        interface = get_class("interface", settings.get("interface"))()
 
         # Add the interface as a source for settings
         settings.add(source=Interface(interface))
 
         # Pre-cache settings
-        settings.get_many(self.get_requirements("item", settings.get("sync")))
-        settings.get_many(self.get_requirements("endpoint", settings.get("from")))
-        settings.get_many(self.get_requirements("endpoint", settings.get("to")))
+        settings.get("sync")
+        source_settings = settings.get_many(get_requirements("endpoint", settings.get("from")))
+        target_settings = settings.get_many(get_requirements("endpoint", settings.get("to")))
         settings.get("mode", '^(sync|fix|check|tweak)$')
 
-    @staticmethod
-    def get_class(model, name):
-        name = alias(name)
-        return getattr(
-            import_module("lib." + model.lower() + "." + name[0].upper() + name[1:].lower()),
-            name[0].upper() + name[1:].lower()
-        )
+        # Connect to endpoints
+        self.source = get_class("endpoint", settings.get("from"))(interface=interface, **source_settings)
+        self.target = get_class("endpoint", settings.get("to"))(interface=interface, **target_settings)
 
-    @staticmethod
-    def get_requirements(model, name):
-        name = alias(name)
-        module = import_module("lib." + model.lower() + "." + name[0].upper() + name[1:].lower())
-        return getattr(module, "requirements") if hasattr(module, "requirements") else ()
+
+def get_class(model, name):
+    name = alias(name)
+    return getattr(
+        import_module("lib." + model.lower() + "." + name[0].upper() + name[1:].lower()),
+        name[0].upper() + name[1:].lower()
+    )
+
+
+def get_requirements(model, name):
+    name = alias(name)
+    module = import_module("lib." + model.lower() + "." + name[0].upper() + name[1:].lower())
+    return getattr(module, "requirements") if hasattr(module, "requirements") else ()
 
 
 if __name__ == "__main__":

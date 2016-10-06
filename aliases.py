@@ -1,5 +1,6 @@
 aliases = {
-    "students": "student"
+    "students": "student",
+    "view": "interface", "here": "interface",
 }
 
 
