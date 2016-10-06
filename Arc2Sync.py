@@ -4,6 +4,7 @@ from lib.questioner.Interface import Interface
 from lib.questioner.Args import Args
 from lib.questioner.Combiner import Combiner
 from lib.questioner.File import File
+from aliases import alias
 
 
 class Arc2Sync:
@@ -12,23 +13,30 @@ class Arc2Sync:
         settings = Combiner(sources=[Args(), File()])
 
         # Build the interface specified
-        interface = self.get("interface", settings.get("interface"))()
+        interface = self.get_class("interface", settings.get("interface"))()
 
         # Add the interface as a source for settings
         settings.add(source=Interface(interface))
 
-        # Get the standard settings
-        settings.get("sync")
-        settings.get("from")
-        settings.get("to")
+        # Pre-cache settings
+        settings.get_many(self.get_requirements("item", settings.get("sync")))
+        settings.get_many(self.get_requirements("endpoint", settings.get("from")))
+        settings.get_many(self.get_requirements("endpoint", settings.get("to")))
         settings.get("mode", '^(sync|fix|check|tweak)$')
 
     @staticmethod
-    def get(model, name):
+    def get_class(model, name):
+        name = alias(name)
         return getattr(
             import_module("lib." + model.lower() + "." + name[0].upper() + name[1:].lower()),
             name[0].upper() + name[1:].lower()
         )
+
+    @staticmethod
+    def get_requirements(model, name):
+        name = alias(name)
+        module = import_module("lib." + model.lower() + "." + name[0].upper() + name[1:].lower())
+        return getattr(module, "requirements") if hasattr(module, "requirements") else ()
 
 
 if __name__ == "__main__":

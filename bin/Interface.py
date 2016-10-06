@@ -26,7 +26,7 @@ class Interface:
 
 class InterfaceAntiWhizz(Interface):
     """
-    An anti-spam interface is for interacting with external resources
+    An anti-whizz interface is for interacting with external resources
     It will delay or skip the standard methods, if required, to prevent whizz
     It must contain methods:
     _put(self, output) to output a string
