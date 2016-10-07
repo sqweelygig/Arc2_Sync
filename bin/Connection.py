@@ -6,6 +6,14 @@ def get_requirements(name):
     return getattr(module, name).get_requirements()
 
 
+def build_connection(name, interface, settings):
+    from aliases import alias
+    from importlib import import_module
+    name = alias(name)
+    module = import_module("lib.connection." + name)
+    return getattr(module, name)(interface, **settings)
+
+
 class Connection:
     @staticmethod
     def get_requirements():
@@ -14,6 +22,15 @@ class Connection:
     def __init__(self, interface):
         self.interface = interface
         raise NotImplementedError()
+
+    def build_factory(self, name, factory_settings, item_settings):
+        from aliases import alias
+        from importlib import import_module
+        connection_name = type(self).__name__
+        item_name = alias(name)
+        name = connection_name + item_name
+        module = import_module("lib.factory." + name)
+        return getattr(module, name)(self, item_settings, **factory_settings)
 
 
 # from functools import partial
