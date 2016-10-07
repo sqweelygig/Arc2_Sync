@@ -1,4 +1,16 @@
-class Endpoint:
+def get_requirements(name):
+    from aliases import alias
+    from importlib import import_module
+    name = alias(name)
+    module = import_module("lib.connection." + name)
+    return getattr(module, name).get_requirements()
+
+
+class Connection:
+    @staticmethod
+    def get_requirements():
+        return set()
+
     def __init__(self, interface):
         self.interface = interface
         raise NotImplementedError()
@@ -11,7 +23,7 @@ class Endpoint:
 #
 # class Endpoint:
 #     """
-#     An endpoint abstracts the details of a data store and means accessing it can happen in a consistent fashion.
+#     An connection abstracts the details of a data store and means accessing it can happen in a consistent fashion.
 #     _get_<key>: returns a iterable of Items, may take advantage of _get_generic(list, map, filter, factory)
 #     """
 #

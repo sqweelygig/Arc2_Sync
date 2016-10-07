@@ -2,6 +2,17 @@ from time import sleep
 from time import time
 
 
+def build_interface(name):
+    from aliases import alias
+    name = alias(name)
+
+    from importlib import import_module
+    return getattr(
+        import_module("lib.interface." + name),
+        name
+    )()
+
+
 class Interface:
     """
     An interface is for interacting with external resource

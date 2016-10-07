@@ -1,4 +1,16 @@
+def get_requirements(name):
+    from aliases import alias
+    from importlib import import_module
+    name = alias(name)
+    module = import_module("lib.item." + name)
+    return getattr(module, name).get_requirements()
+
+
 class Item:
+    @staticmethod
+    def get_requirements():
+        return set()
+
     def __init__(self):
         raise NotImplementedError()
 

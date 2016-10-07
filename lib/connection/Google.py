@@ -1,9 +1,11 @@
-from bin.Endpoint import Endpoint
-
-requirements = ["domain"]
+from bin.Connection import Connection
 
 
-class Google(Endpoint):
+class Google(Connection):
+    @staticmethod
+    def get_requirements():
+        return Connection.get_requirements() | {"domain"}
+
     def __init__(self, interface, domain):
         # TODO optimise imports
         from os import path
