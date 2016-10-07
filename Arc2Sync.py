@@ -54,18 +54,23 @@ class Arc2Sync:
                 .get(settings.get("to"))
                 .build_factory(settings.get("sync"), target_factory_settings, item_settings),
         }
+        self.source_factory = factories.get(settings.get("from"))
+        self.target_factory = factories.get(settings.get("to"))
 
-        # Gather data
-        source_items = factories.get(settings.get("from")).get()
-        target_items = factories.get(settings.get("to")).get()
+    def gather(self):
+        return {
+            "source": self.source_factory.get(),
+            "target": self.target_factory.get(),
+        }
 
 
 if __name__ == "__main__":
     print("## Building sync engine.")
     sync = Arc2Sync()
+    print("## Gathering sync items.")
+    items = sync.gather()
+    for item in items.get("source"):
+        print(item)
     print("## Pairing sync items.")
-    # Pair[]
-    # pairs = sync.pair();
     print("## Executing sync task.")
-    # sync.execute(pairs);
     print("## Exiting sync app.")

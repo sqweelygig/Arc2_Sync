@@ -1,3 +1,6 @@
+from time import sleep
+
+
 def build_interface(name):
     from aliases import alias
     name = alias(name)
@@ -86,5 +89,4 @@ class InterfaceAntiWhizz(Interface):
             self._put(output)
 
     def __del__(self):
-        from time import sleep
         sleep(self.verbosity.get("end"))

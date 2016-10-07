@@ -1,7 +1,7 @@
-from bin.Factory import Factory
+from lib.factory.GoogleBase import GoogleBase
 
 
-class GoogleStudent(Factory):
+class GoogleStudent(GoogleBase):
     def __init__(self, connection, item_settings, domain):
         try:
             super().__init__(connection, item_settings)
@@ -11,7 +11,27 @@ class GoogleStudent(Factory):
 
     @staticmethod
     def get_requirements():
-        return Factory.get_requirements() | {"domain"}
+        return GoogleBase.get_requirements() | {"domain"}
 
-    def get(self):
-        return self.connection.list("student", domain=self.domain)
+    def list(self):
+        return self.connection.list("admin", "directory_v1", ["users"], "users", domain=self.domain)
+
+    def map(self, item):
+        from datetime import datetime
+        from datetime import timedelta
+        output = {
+            "ids": {
+                "google": item["id"],
+                "username": item["primaryEmail"].split("@")[0],
+            },
+            "details": {
+                "forename": item["name"]["givenName"],
+                "surname": item["name"]["familyName"],
+                "username": item["primaryEmail"].split("@")[0],
+                "keep_until": datetime.strptime(item["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z') + timedelta(days=100),
+            },
+        }
+        for external_id in item.get("externalIds", []):
+            if external_id["customType"] is not "null":
+                output["ids"][external_id["customType"].lower()] = external_id["value"]
+        return output if "admissionnumber" in output["ids"] else None

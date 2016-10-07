@@ -6,12 +6,6 @@ class Google(Connection):
     def get_requirements():
         return Connection.get_requirements() | {"domain"}
 
-    @staticmethod
-    def get_setup(name):
-        return {
-            "student": {"endpoint": "admin", "version": "directory_v1", "path": ["users"], "key": "users"}
-        }.get(name)
-
     def __init__(self, interface, domain):
         # TODO optimise imports
         from os import path
@@ -48,14 +42,12 @@ class Google(Connection):
             credentials = tools.run_flow(flow, store)
         self.http = credentials.authorize(Http())
 
-    def list(self, name, **kwargs):
-        setup = self.get_setup(name)
-
+    def list(self, endpoint, version, path, key, **kwargs):
         # Navigate down the service to the list required
         from googleapiclient import discovery
         from functools import partial
-        service = discovery.build(setup.get('endpoint'), setup.get('version'), http=self.http)
-        for node in setup.get('path'):
+        service = discovery.build(endpoint, version, http=self.http)
+        for node in path:
             service = getattr(service, node)()
         ask = partial(service.list, **kwargs)
 
@@ -66,6 +58,6 @@ class Google(Connection):
             response = ask().execute() if next_page is True else ask(pageToken=next_page).execute()
             next_page = response.get("nextPageToken", False)
             self.interface.reassure(next_page)
-            output += response.get(setup.get('key'), [])
+            output += response.get(key, [])
 
         return output
