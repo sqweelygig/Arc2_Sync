@@ -7,3 +7,6 @@ class InterfaceStudent(Factory):
             super().__init__(connection, settings)
         except NotImplementedError:
             pass
+
+    def get(self):
+        return []

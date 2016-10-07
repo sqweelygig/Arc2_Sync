@@ -17,3 +17,6 @@ class Factory:
     @staticmethod
     def get_requirements():
         return set()
+
+    def get(self):
+        raise NotImplementedError

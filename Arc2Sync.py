@@ -55,6 +55,10 @@ class Arc2Sync:
                 .build_factory(settings.get("sync"), target_factory_settings, item_settings),
         }
 
+        # Gather data
+        source_items = factories.get(settings.get("from")).get()
+        target_items = factories.get(settings.get("to")).get()
+
 
 if __name__ == "__main__":
     print("## Building sync engine.")

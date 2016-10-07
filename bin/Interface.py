@@ -1,7 +1,3 @@
-from time import sleep
-from time import time
-
-
 def build_interface(name):
     from aliases import alias
     name = alias(name)
@@ -65,6 +61,7 @@ class InterfaceAntiWhizz(Interface):
         raise NotImplementedError()
 
     def put(self, output=""):
+        from time import time
         while time() < self.last_interacted + self.verbosity.get("put"):
             pass
         self.last_interacted = time()
@@ -74,6 +71,7 @@ class InterfaceAntiWhizz(Interface):
         raise NotImplementedError()
 
     def get(self, key=""):
+        from time import time
         value = self._get(key)
         self.last_interacted = time()
         return value
@@ -82,9 +80,11 @@ class InterfaceAntiWhizz(Interface):
         raise NotImplementedError()
 
     def reassure(self, output=""):
+        from time import time
         if time() > self.last_interacted + self.verbosity.get("reassure"):
             self.last_interacted = time()
             self._put(output)
 
     def __del__(self):
+        from time import sleep
         sleep(self.verbosity.get("end"))
