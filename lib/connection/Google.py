@@ -6,10 +6,9 @@ class Google(Connection):
     def get_requirements():
         return Connection.get_requirements() | {"domain"}
 
-    def __init__(self, interface, domain):
+    def __init__(self, interface, root_dir, domain):
         # TODO optimise imports
         from os import path
-        from os import getenv
         from os import makedirs
         from _md5 import md5
         from oauth2client import file
@@ -17,11 +16,10 @@ class Google(Connection):
         from oauth2client import tools
         from httplib2 import Http
         try:
-            super().__init__(interface)
+            super().__init__(interface, root_dir)
         except NotImplementedError:
             pass
-        home_dir = path.join(getenv("APPDATA"), "Arc2Sync")
-        credential_dir = path.join(home_dir, "credentials")
+        credential_dir = path.join(self.root_dir, "credentials")
         if not path.exists(credential_dir):
             makedirs(credential_dir)
         m = md5()

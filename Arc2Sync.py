@@ -27,18 +27,26 @@ class Arc2Sync:
             get_factory_requirements(settings.get("to"), settings.get("sync"))
         )
         settings.get("mode", '^(sync|fix|check|tweak)$')
+        settings.get("root_dir")
 
         # Make connections
         from bin.Connection import build_connection
+        from os import path
+        from os import makedirs
+        root_dir = settings.get("root_dir")
+        if not path.exists(root_dir):
+            makedirs(root_dir)
         connections = {
             settings.get("from"): build_connection(
                 name=settings.get("from"),
                 interface=self.interface,
+                root_dir=root_dir,
                 settings=source_settings,
             ),
             settings.get("to"): build_connection(
                 name=settings.get("to"),
                 interface=self.interface,
+                root_dir=root_dir,
                 settings=target_settings,
             ),
         }
@@ -72,21 +80,26 @@ class Arc2Sync:
         for section_focus, items in iter(candidates.items()):
             sections_to_do_keys.remove(section_focus)
             for item_focus in iter(items):
+                self.interface.reassure(item_focus)
                 match = {
                     section_focus: item_focus,
                 }
                 for section_done_key in iter(sections_done_keys):
                     match[section_done_key] = None
                 for section_possible_key in iter(sections_to_do_keys):
+                    match[section_possible_key] = None
                     for item_possible in iter(candidates[section_possible_key]):
-                        if item_possible == item_focus:
+                        if item_focus == item_possible:
                             match[section_possible_key] = item_possible
                             candidates[section_possible_key].remove(item_possible)
                             break
-                    match[section_possible_key] = None
                 matches.append(match)
             sections_done_keys.add(section_focus)
         return matches
+
+    def execute(self, matches):
+        for match in matches:
+            self.interface.reassure(str(match["source"]) + ", " + str(match["target"]))
 
 
 if __name__ == "__main__":
@@ -95,6 +108,7 @@ if __name__ == "__main__":
     print("## Gathering sync items.")
     responses = sync.gather()
     print("## Pairing sync items.")
-    sync.match(responses)
+    pairs = sync.match(responses)
     print("## Executing sync task.")
+    sync.execute(pairs)
     print("## Exiting sync app.")

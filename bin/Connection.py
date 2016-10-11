@@ -6,12 +6,13 @@ def get_requirements(name):
     return getattr(module, name).get_requirements()
 
 
-def build_connection(name, interface, settings):
+def build_connection(name, interface, root_dir, settings):
     from aliases import alias
     from importlib import import_module
+    from os import path
     name = alias(name)
     module = import_module("lib.connection." + name)
-    return getattr(module, name)(interface, **settings)
+    return getattr(module, name)(interface, path.join(root_dir, name), **settings)
 
 
 class Connection:
@@ -19,8 +20,13 @@ class Connection:
     def get_requirements():
         return set()
 
-    def __init__(self, interface):
+    def __init__(self, interface, root_dir):
+        from os import makedirs
+        from os import path
         self.interface = interface
+        self.root_dir = root_dir
+        if not path.exists(self.root_dir):
+            makedirs(self.root_dir)
         raise NotImplementedError()
 
     def build_factory(self, name, factory_settings, item_settings):

@@ -9,9 +9,9 @@ def get_requirements(connection_name, item_name):
 
 
 class Factory:
-    def __init__(self, connection, settings):
+    def __init__(self, connection, item_settings):
         self.connection = connection
-        self.settings = settings
+        self.item_settings = item_settings
         raise NotImplementedError
 
     @staticmethod

@@ -1,7 +1,13 @@
 from bin.Factory import Factory
 
 
-class GoogleBase(Factory):
+class SimsBase(Factory):
+    def __init__(self, connection, item_settings):
+        try:
+            super().__init__(connection, item_settings)
+        except NotImplementedError:
+            pass
+
     def get(self):
         items = self.list()
         output = []
@@ -10,9 +16,6 @@ class GoogleBase(Factory):
             if value is not None:
                 output.append(value)
         return output
-
-    def __init__(self, connection, settings):
-        super().__init__(connection, settings)
 
     def list(self):
         raise NotImplementedError

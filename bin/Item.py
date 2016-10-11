@@ -17,10 +17,13 @@ class Item:
         raise NotImplementedError()
 
     def __eq__(self, other):
-        for key, value in self.ids:
+        for key, value in self.ids.items():
             if other.ids.get(key) == value:
                 return True
         return False
+
+    def __str__(self):
+        return self.ids.__str__()
 
 
 # from importlib import import_module

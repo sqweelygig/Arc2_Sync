@@ -16,11 +16,12 @@ class GoogleStudent(GoogleBase):
     def list(self):
         return self.connection.list("admin", "directory_v1", ["users"], "users", domain=self.domain)
 
-    def map(self, item):
+    @staticmethod
+    def map(item):
         from datetime import datetime
         from datetime import timedelta
         from lib.item.Student import Student
-        output = super().map(item)
+        output = GoogleBase.map(item)
         output = {
             "ids": {
                 "google": output["id"],
