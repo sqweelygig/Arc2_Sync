@@ -19,19 +19,21 @@ class GoogleStudent(GoogleBase):
     def map(self, item):
         from datetime import datetime
         from datetime import timedelta
+        from lib.item.Student import Student
+        output = super().map(item)
         output = {
             "ids": {
-                "google": item["id"],
-                "username": item["primaryEmail"].split("@")[0],
+                "google": output["id"],
+                "username": output["primaryEmail"].split("@")[0],
             },
             "details": {
-                "forename": item["name"]["givenName"],
-                "surname": item["name"]["familyName"],
-                "username": item["primaryEmail"].split("@")[0],
-                "keep_until": datetime.strptime(item["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z') + timedelta(days=100),
+                "forename": output["name"]["givenName"],
+                "surname": output["name"]["familyName"],
+                "username": output["primaryEmail"].split("@")[0],
+                "keep_until": datetime.strptime(output["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z') + timedelta(days=100),
             },
         }
         for external_id in item.get("externalIds", []):
             if external_id["customType"] is not "null":
                 output["ids"][external_id["customType"].lower()] = external_id["value"]
-        return output if "admissionnumber" in output["ids"] else None
+        return Student(**output) if "admissionnumber" in output["ids"] else None

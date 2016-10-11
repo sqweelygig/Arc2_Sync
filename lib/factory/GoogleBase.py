@@ -18,4 +18,4 @@ class GoogleBase(Factory):
         raise NotImplementedError
 
     def map(self, item):
-        raise NotImplementedError
+        return item

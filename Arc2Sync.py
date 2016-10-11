@@ -8,10 +8,10 @@ class Arc2Sync:
 
         # Build the interface specified
         from bin.Interface import build_interface
-        interface = build_interface(settings.get("interface"))
+        self.interface = build_interface(settings.get("interface"))
 
         # Add the interface as a source for settings
-        settings.add(interface)
+        settings.add(self.interface)
 
         # Pre-cache settings
         from bin.Item import get_requirements as get_item_requirements
@@ -33,12 +33,12 @@ class Arc2Sync:
         connections = {
             settings.get("from"): build_connection(
                 name=settings.get("from"),
-                interface=interface,
+                interface=self.interface,
                 settings=source_settings,
             ),
             settings.get("to"): build_connection(
                 name=settings.get("to"),
-                interface=interface,
+                interface=self.interface,
                 settings=target_settings,
             ),
         }
@@ -63,14 +63,38 @@ class Arc2Sync:
             "target": self.target_factory.get(),
         }
 
+    def match(self, candidates):
+        sections_to_do_keys = set()
+        sections_done_keys = set()
+        matches = []
+        for section_to_do in iter(candidates):
+            sections_to_do_keys.add(section_to_do)
+        for section_focus, items in iter(candidates.items()):
+            sections_to_do_keys.remove(section_focus)
+            for item_focus in iter(items):
+                match = {
+                    section_focus: item_focus,
+                }
+                for section_done_key in iter(sections_done_keys):
+                    match[section_done_key] = None
+                for section_possible_key in iter(sections_to_do_keys):
+                    for item_possible in iter(candidates[section_possible_key]):
+                        if item_possible == item_focus:
+                            match[section_possible_key] = item_possible
+                            candidates[section_possible_key].remove(item_possible)
+                            break
+                    match[section_possible_key] = None
+                matches.append(match)
+            sections_done_keys.add(section_focus)
+        return matches
+
 
 if __name__ == "__main__":
     print("## Building sync engine.")
     sync = Arc2Sync()
     print("## Gathering sync items.")
-    items = sync.gather()
-    for item in items.get("source"):
-        print(item)
+    responses = sync.gather()
     print("## Pairing sync items.")
+    sync.match(responses)
     print("## Executing sync task.")
     print("## Exiting sync app.")

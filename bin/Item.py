@@ -11,8 +11,16 @@ class Item:
     def get_requirements():
         return set()
 
-    def __init__(self):
+    def __init__(self, ids, details):
+        self.ids = ids
+        self.details = details
         raise NotImplementedError()
+
+    def __eq__(self, other):
+        for key, value in self.ids:
+            if other.ids.get(key) == value:
+                return True
+        return False
 
 
 # from importlib import import_module
