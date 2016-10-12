@@ -13,8 +13,14 @@ class GoogleStudent(GoogleBase):
     def get_requirements():
         return GoogleBase.get_requirements() | {"domain"}
 
-    def list(self):
-        return self.connection.list("admin", "directory_v1", ["users"], "users", domain=self.domain)
+    def get_list_arguments(self):
+        return {
+            "domain": self.domain,
+            "endpoint": "admin",
+            "version": "directory_v1",
+            "path": ["users"],
+            "key": "users",
+        }
 
     @staticmethod
     def map(item):
@@ -33,6 +39,7 @@ class GoogleStudent(GoogleBase):
                 "username": output["primaryEmail"].split("@")[0],
                 "keep_until":
                     datetime.strptime(output["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z')
+                    # TODO Put this into settings
                     + timedelta(days=100)
                 ,
             },

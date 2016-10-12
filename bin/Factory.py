@@ -8,7 +8,7 @@ def get_requirements(connection_name, item_name):
     return getattr(module, name).get_requirements()
 
 
-class Factory:
+class FactoryReadOnly:
     def __init__(self, connection, item_settings):
         self.connection = connection
         self.item_settings = item_settings
@@ -19,4 +19,25 @@ class Factory:
         return set()
 
     def get(self):
+        raise NotImplementedError
+
+
+class Factory(FactoryReadOnly):
+    def __init__(self, connection, item_settings):
+        try:
+            super().__init__(connection, item_settings)
+        except NotImplementedError:
+            pass
+        raise NotImplementedError
+
+    def get(self):
+        raise NotImplementedError
+
+    def put(self, item):
+        raise NotImplementedError
+
+    def delete(self, item):
+        raise NotImplementedError
+
+    def patch(self, item):
         raise NotImplementedError

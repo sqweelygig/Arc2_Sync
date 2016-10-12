@@ -1,7 +1,7 @@
-from bin.Factory import Factory
+from bin.Factory import FactoryReadOnly
 
 
-class SimsBase(Factory):
+class SimsBase(FactoryReadOnly):
     def __init__(self, connection, item_settings):
         try:
             super().__init__(connection, item_settings)

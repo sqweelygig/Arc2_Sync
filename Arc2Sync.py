@@ -100,12 +100,15 @@ class Arc2Sync:
     def execute(self, matches):
         from datetime import datetime
         mode = self.settings.get("mode")
+
         do = mode not in {"check"}
+
         if mode in {"fix"}:
             for match in iter(matches):
                 if match["target"] is None:
                     # ask, map match["source"]
                     pass
+
         if mode in {"check", "sync"}:
             for match in iter(matches):
                 if match["source"] is None:
@@ -113,26 +116,22 @@ class Arc2Sync:
                                     match["target"].details.get("keep_until") < datetime.now():
                         self.interface.put("DELETE: " + str(match["target"]))
                         if do:
-                            # delete
-                            pass
+                            self.target_factory.delete(match["target"])
+
         if mode in {"check", "sync"}:
             for match in iter(matches):
                 if match["target"] is None:
                     self.interface.put("CREATE: " + str(match["source"]))
                     if do:
-                        # create
-                        pass
+                        self.target_factory.put(match["source"])
+
         if mode in {"check", "sync", "tweak", "fix"}:
             for match in iter(matches):
                 if match["target"] is not None and match["source"] is not None:
                     if match["target"].enrich(match["source"]):
                         self.interface.put("UPDATE: " + str(match["source"]))
-                    if do:
-                        # update
-                        pass
-
-        for match in matches:
-            self.interface.reassure(str(match["source"]) + ", " + str(match["target"]))
+                        if do:
+                            self.target_factory.patch(match["target"])
 
 
 if __name__ == "__main__":
