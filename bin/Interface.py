@@ -65,8 +65,7 @@ class InterfaceAntiWhizz(Interface):
 
     def put(self, output=""):
         from time import time
-        while time() < self.last_interacted + self.verbosity.get("put"):
-            pass
+        sleep(max(0, self.last_interacted + self.verbosity.get("put") - time()))
         self.last_interacted = time()
         self._put(output)
 

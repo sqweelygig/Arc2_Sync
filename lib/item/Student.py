@@ -7,3 +7,10 @@ class Student(Item):
             super().__init__(ids, details)
         except NotImplementedError:
             pass
+
+    @staticmethod
+    def get_core_fields():
+        output = Item.get_core_fields()
+        output.add("forename")
+        output.add("surname")
+        return output

@@ -4,47 +4,47 @@ class Arc2Sync:
         from lib.questioner.Args import Args
         from lib.questioner.Combiner import Combiner
         from lib.questioner.File import File
-        settings = Combiner(sources=[Args(), File()])
+        self.settings = Combiner(sources=[Args(), File()])
 
         # Build the interface specified
         from bin.Interface import build_interface
-        self.interface = build_interface(settings.get("interface"))
+        self.interface = build_interface(self.settings.get("interface"))
 
         # Add the interface as a source for settings
-        settings.add(self.interface)
+        self.settings.add(self.interface)
 
         # Pre-cache settings
         from bin.Item import get_requirements as get_item_requirements
         from bin.Connection import get_requirements as get_connection_requirements
         from bin.Factory import get_requirements as get_factory_requirements
-        item_settings = settings.get_many(get_item_requirements(settings.get("sync")))
-        source_settings = settings.get_many(get_connection_requirements(settings.get("from")))
-        source_factory_settings = settings.get_many(
-            get_factory_requirements(settings.get("from"), settings.get("sync"))
+        item_settings = self.settings.get_many(get_item_requirements(self.settings.get("sync")))
+        source_settings = self.settings.get_many(get_connection_requirements(self.settings.get("from")))
+        source_factory_settings = self.settings.get_many(
+            get_factory_requirements(self.settings.get("from"), self.settings.get("sync"))
         )
-        target_settings = settings.get_many(get_connection_requirements(settings.get("to")))
-        target_factory_settings = settings.get_many(
-            get_factory_requirements(settings.get("to"), settings.get("sync"))
+        target_settings = self.settings.get_many(get_connection_requirements(self.settings.get("to")))
+        target_factory_settings = self.settings.get_many(
+            get_factory_requirements(self.settings.get("to"), self.settings.get("sync"))
         )
-        settings.get("mode", '^(sync|fix|check|tweak)$')
-        settings.get("root_dir")
+        self.settings.get("mode", '^(sync|fix|check|tweak)$')
+        self.settings.get("root_dir")
 
         # Make connections
         from bin.Connection import build_connection
         from os import path
         from os import makedirs
-        root_dir = settings.get("root_dir")
+        root_dir = self.settings.get("root_dir")
         if not path.exists(root_dir):
             makedirs(root_dir)
         connections = {
-            settings.get("from"): build_connection(
-                name=settings.get("from"),
+            self.settings.get("from"): build_connection(
+                name=self.settings.get("from"),
                 interface=self.interface,
                 root_dir=root_dir,
                 settings=source_settings,
             ),
-            settings.get("to"): build_connection(
-                name=settings.get("to"),
+            self.settings.get("to"): build_connection(
+                name=self.settings.get("to"),
                 interface=self.interface,
                 root_dir=root_dir,
                 settings=target_settings,
@@ -53,17 +53,17 @@ class Arc2Sync:
 
         # Make factories
         factories = {
-            settings.get("from"):
+            self.settings.get("from"):
                 connections
-                .get(settings.get("from"))
-                .build_factory(settings.get("sync"), source_factory_settings, item_settings),
-            settings.get("to"):
+                .get(self.settings.get("from"))
+                .build_factory(self.settings.get("sync"), source_factory_settings, item_settings),
+            self.settings.get("to"):
                 connections
-                .get(settings.get("to"))
-                .build_factory(settings.get("sync"), target_factory_settings, item_settings),
+                .get(self.settings.get("to"))
+                .build_factory(self.settings.get("sync"), target_factory_settings, item_settings),
         }
-        self.source_factory = factories.get(settings.get("from"))
-        self.target_factory = factories.get(settings.get("to"))
+        self.source_factory = factories.get(self.settings.get("from"))
+        self.target_factory = factories.get(self.settings.get("to"))
 
     def gather(self):
         return {
@@ -80,7 +80,6 @@ class Arc2Sync:
         for section_focus, items in iter(candidates.items()):
             sections_to_do_keys.remove(section_focus)
             for item_focus in iter(items):
-                self.interface.reassure(item_focus)
                 match = {
                     section_focus: item_focus,
                 }
@@ -92,12 +91,46 @@ class Arc2Sync:
                         if item_focus == item_possible:
                             match[section_possible_key] = item_possible
                             candidates[section_possible_key].remove(item_possible)
+                            self.interface.reassure(str(item_focus) + ", " + str(item_possible))
                             break
                 matches.append(match)
             sections_done_keys.add(section_focus)
         return matches
 
     def execute(self, matches):
+        from datetime import datetime
+        mode = self.settings.get("mode")
+        do = mode not in {"check"}
+        if mode in {"fix"}:
+            for match in iter(matches):
+                if match["target"] is None:
+                    # ask, map match["source"]
+                    pass
+        if mode in {"check", "sync"}:
+            for match in iter(matches):
+                if match["source"] is None:
+                    if match["target"].details.get("keep_until", None) is None or \
+                                    match["target"].details.get("keep_until") < datetime.now():
+                        self.interface.put("DELETE: " + str(match["target"]))
+                        if do:
+                            # delete
+                            pass
+        if mode in {"check", "sync"}:
+            for match in iter(matches):
+                if match["target"] is None:
+                    self.interface.put("CREATE: " + str(match["source"]))
+                    if do:
+                        # create
+                        pass
+        if mode in {"check", "sync", "tweak", "fix"}:
+            for match in iter(matches):
+                if match["target"] is not None and match["source"] is not None:
+                    if match["target"].enrich(match["source"]):
+                        self.interface.put("UPDATE: " + str(match["source"]))
+                    if do:
+                        # update
+                        pass
+
         for match in matches:
             self.interface.reassure(str(match["source"]) + ", " + str(match["target"]))
 

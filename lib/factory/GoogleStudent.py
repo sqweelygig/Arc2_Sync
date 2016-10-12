@@ -31,7 +31,10 @@ class GoogleStudent(GoogleBase):
                 "forename": output["name"]["givenName"],
                 "surname": output["name"]["familyName"],
                 "username": output["primaryEmail"].split("@")[0],
-                "keep_until": datetime.strptime(output["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z') + timedelta(days=100),
+                "keep_until":
+                    datetime.strptime(output["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z')
+                    + timedelta(days=100)
+                ,
             },
         }
         for external_id in item.get("externalIds", []):

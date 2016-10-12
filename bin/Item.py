@@ -12,6 +12,9 @@ class Item:
         return set()
 
     def __init__(self, ids, details):
+        for key in self.get_core_fields():
+            if details[key] is None:
+                raise IndexError
         self.ids = ids
         self.details = details
         raise NotImplementedError()
@@ -24,6 +27,22 @@ class Item:
 
     def __str__(self):
         return self.ids.__str__()
+
+    def enrich(self, other):
+        enriched = False
+        for key in other.ids:
+            if self.ids.get(key) != other.ids.get(key):
+                enriched = enriched or key in self.ids
+        for key in other.details:
+            # TODO The logic of these two lines is not pretty, but works.  I'd like them to be both.
+            if self.details.get(key) != other.details.get(key):
+                enriched = enriched or (key in self.details) or (key in self.get_core_fields())
+                self.details[key] = other.details[key]
+        return enriched
+
+    @staticmethod
+    def get_core_fields():
+        return set()
 
 
 # from importlib import import_module
