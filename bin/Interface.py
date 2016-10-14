@@ -1,15 +1,22 @@
 from time import sleep
 
 
-def build_interface(name):
+def build_interface(name, settings):
     from aliases import alias
-    name = alias(name)
-
     from importlib import import_module
+    name = alias(name)
     return getattr(
         import_module("lib.interface." + name),
         name
-    )()
+    )(**settings)
+
+
+def get_requirements(name):
+    from aliases import alias
+    from importlib import import_module
+    name = alias(name)
+    module = import_module("lib.interface." + name)
+    return getattr(module, name).get_requirements()
 
 
 class Interface:
@@ -32,6 +39,10 @@ class Interface:
 
     def reassure(self, output=""):
         raise NotImplementedError()
+
+    @staticmethod
+    def get_requirements():
+        return set()
 
 
 class InterfaceAntiWhizz(Interface):

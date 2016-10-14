@@ -8,10 +8,13 @@ class Arc2Sync:
 
         # Build the interface specified
         from bin.Interface import build_interface
-        self.interface = build_interface(self.settings.get("interface"))
+        from bin.Interface import get_requirements as get_interface_requirements
+        interface_settings = self.settings.get_many(get_interface_requirements(self.settings.get("interface")))
+        self.interface = build_interface(self.settings.get("interface"), interface_settings)
 
         # Add the interface as a source for settings
-        self.settings.add(self.interface)
+        from lib.questioner.Interface import Interface
+        self.settings.add(Interface(self.interface))
 
         # Pre-cache settings
         from bin.Item import get_requirements as get_item_requirements
