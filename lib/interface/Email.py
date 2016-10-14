@@ -1,4 +1,5 @@
 from smtplib import SMTP
+from time import strftime
 
 from bin.Interface import Interface
 
@@ -13,7 +14,7 @@ class Email(Interface):
         self.server = mail_server
         self.username = mail_username
         self.password = mail_password
-        self.body = ""
+        self.body = strftime('%c') + "\r\n"
 
     @staticmethod
     def get_requirements():
@@ -41,6 +42,7 @@ class Email(Interface):
         raise NotImplementedError
 
     def __del__(self):
+        self.body += strftime('%c') + "\r\n"
         server = SMTP(self.server)
         server.ehlo()
         server.starttls()

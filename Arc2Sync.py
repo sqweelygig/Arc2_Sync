@@ -103,7 +103,6 @@ class Arc2Sync:
     def execute(self, matches):
         from datetime import datetime
         mode = self.settings.get("mode")
-
         do = mode not in {"check"}
 
         if mode in {"fix"}:
@@ -132,7 +131,7 @@ class Arc2Sync:
             for match in iter(matches):
                 if match["target"] is not None and match["source"] is not None:
                     if match["target"].enrich(match["source"]):
-                        self.interface.put("UPDATE: " + str(match["source"]))
+                        self.interface.put("UPDATE: " + str(match["target"]))
                         if do:
                             self.target_factory.patch(match["target"])
 

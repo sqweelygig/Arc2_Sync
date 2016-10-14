@@ -13,6 +13,8 @@ class GoogleStudent(GoogleBase):
     def get_requirements():
         return GoogleBase.get_requirements() | {"domain"}
 
+    # TODO Combine common elements of below
+
     def get_list_arguments(self):
         return {
             "domain": self.domain,
@@ -20,6 +22,22 @@ class GoogleStudent(GoogleBase):
             "version": "directory_v1",
             "path": ["users"],
             "key": "users",
+        }
+
+    def get_patch_arguments(self, item):
+        return {
+            "userKey": item.ids["username"] + "@" + self.domain,
+            "endpoint": "admin",
+            "version": "directory_v1",
+            "path": ["users"]
+        }
+
+    def get_delete_arguments(self, item):
+        return {
+            "endpoint": "admin",
+            "version": "directory_v1",
+            "path": ["users"],
+            "userKey": item.ids["username"] + "@" + self.domain,
         }
 
     @staticmethod
@@ -48,3 +66,17 @@ class GoogleStudent(GoogleBase):
             if external_id["customType"] is not "null":
                 output["ids"][external_id["customType"].lower()] = external_id["value"]
         return Student(**output) if "admissionnumber" in output["ids"] else None
+
+    @staticmethod
+    def unmap(item, purpose=None):
+        output = {
+            "externalIds": [],
+            "name": {"givenName": item.details["forename"], "familyName": item.details["surname"]}
+        }
+        for external_id in item.ids:
+            output["externalIds"].append({
+                "type": "custom",
+                "customType": external_id,
+                "value": item.ids[external_id]
+            })
+        return output

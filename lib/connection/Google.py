@@ -40,20 +40,28 @@ class Google(Connection):
             credentials = tools.run_flow(flow, store)
         self.http = credentials.authorize(Http())
 
-    def list(self, endpoint, version, path, key, **kwargs):
-        # Navigate down the service to the list required
+    def get_service(self, endpoint, version, path):
         from googleapiclient import discovery
-        from functools import partial
         service = discovery.build(endpoint, version, http=self.http)
         for node in path:
             service = getattr(service, node)()
-        ask = partial(service.list, **kwargs)
+        return service
+
+    def patch(self, endpoint, version, path, **kwargs):
+        self.get_service(endpoint, version, path).patch(**kwargs).execute()
+
+    def delete(self, endpoint, version, path, **kwargs):
+        self.get_service(endpoint, version, path).delete(**kwargs).execute()
+
+    def list(self, endpoint, version, path, key, **kwargs):
+        from functools import partial
+        task = partial(self.get_service(endpoint, version, path).list, **kwargs)
 
         # Iterate around the pages that list gives
         output = []
         next_page = True
         while bool(next_page):
-            response = ask().execute() if next_page is True else ask(pageToken=next_page).execute()
+            response = task().execute() if next_page is True else task(pageToken=next_page).execute()
             next_page = response.get("nextPageToken", False)
             self.interface.reassure(next_page)
             output += response.get(key, [])
