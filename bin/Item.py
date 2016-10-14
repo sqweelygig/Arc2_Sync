@@ -26,7 +26,10 @@ class Item:
         return False
 
     def __str__(self):
-        return self.ids.__str__()
+        return {
+            "ids": self.ids,
+            "details": self.details,
+        }.__str__()
 
     def enrich(self, other):
         enriched = False
@@ -39,6 +42,11 @@ class Item:
                 enriched = enriched or (key in self.details) or (key in self.get_core_fields())
                 self.details[key] = other.details[key]
         return enriched
+
+    def get(self, key):
+        if key not in self.details:
+            self.details[key] = getattr(self, "suggest_" + key)()
+        return self.details[key]
 
     @staticmethod
     def get_core_fields():

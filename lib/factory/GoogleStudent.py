@@ -40,6 +40,20 @@ class GoogleStudent(GoogleBase):
             "userKey": item.ids["username"] + "@" + self.domain,
         }
 
+    def get_put_arguments(self, item):
+        patch = self.unmap(item)
+        # TODO something about username collisions, probably already half implemented in Student.py>Username
+        username = item.get("username")
+        patch["primaryEmail"] = username + "@" + self.domain
+        item.ids["username"] = username
+        patch["password"] = item.get("password")
+        return {
+            "endpoint": "admin",
+            "version": "directory_v1",
+            "path": ["users"],
+            "body": patch,
+        }
+
     @staticmethod
     def map(item):
         from datetime import datetime
@@ -68,7 +82,7 @@ class GoogleStudent(GoogleBase):
         return Student(**output) if "admissionnumber" in output["ids"] else None
 
     @staticmethod
-    def unmap(item, purpose=None):
+    def unmap(item):
         output = {
             "externalIds": [],
             "name": {"givenName": item.details["forename"], "familyName": item.details["surname"]}

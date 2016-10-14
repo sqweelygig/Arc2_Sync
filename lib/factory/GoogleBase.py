@@ -3,14 +3,13 @@ from bin.Factory import Factory
 
 class GoogleBase(Factory):
     def patch(self, item):
-        self.connection.patch(body=self.unmap(item, "patch"), **self.get_patch_arguments(item))
+        self.connection.patch(body=self.unmap(item), **self.get_patch_arguments(item))
 
     def delete(self, item):
         self.connection.delete(**self.get_delete_arguments(item))
 
     def put(self, item):
-        # TODO Implement
-        print("!C:" + str(item.ids))
+        self.connection.insert(**self.get_put_arguments(item))
 
     def get(self):
         items = self.connection.list(**self.get_list_arguments())
@@ -30,6 +29,9 @@ class GoogleBase(Factory):
     def get_delete_arguments(self, item):
         raise NotImplementedError
 
+    def get_put_arguments(self, item):
+        raise NotImplementedError
+
     def __init__(self, connection, settings):
         super().__init__(connection, settings)
 
@@ -38,5 +40,5 @@ class GoogleBase(Factory):
         return item
 
     @staticmethod
-    def unmap(item, purpose=None):
+    def unmap(item):
         return item

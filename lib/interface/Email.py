@@ -15,6 +15,7 @@ class Email(Interface):
         self.username = mail_username
         self.password = mail_password
         self.body = strftime('%c') + "\r\n"
+        self.send = False
 
     @staticmethod
     def get_requirements():
@@ -31,6 +32,7 @@ class Email(Interface):
             super().put(output)
         except NotImplementedError:
             pass
+        self.send = True
         self.body += output + "\r\n"
 
     def get(self, key=""):
@@ -42,15 +44,16 @@ class Email(Interface):
         raise NotImplementedError
 
     def __del__(self):
-        self.body += strftime('%c') + "\r\n"
-        server = SMTP(self.server)
-        server.ehlo()
-        server.starttls()
-        server.login(self.username, self.password)
-        server.sendmail(self.username, self.to_address, "\r\n".join([
-            "From: " + self.username,
-            "To: " + self.to_address,
-            "Subject: Arc Synchronise Results",
-            "",
-            self.body,
-        ]))
+        if self.send:
+            self.body += strftime('%c') + "\r\n"
+            server = SMTP(self.server)
+            server.ehlo()
+            server.starttls()
+            server.login(self.username, self.password)
+            server.sendmail(self.username, self.to_address, "\r\n".join([
+                "From: " + self.username,
+                "To: " + self.to_address,
+                "Subject: Arc Synchronise Results",
+                "",
+                self.body,
+            ]))

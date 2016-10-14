@@ -53,6 +53,9 @@ class Google(Connection):
     def delete(self, endpoint, version, path, **kwargs):
         self.get_service(endpoint, version, path).delete(**kwargs).execute()
 
+    def insert(self, endpoint, version, path, **kwargs):
+        self.get_service(endpoint, version, path).insert(**kwargs).execute()
+
     def list(self, endpoint, version, path, key, **kwargs):
         from functools import partial
         task = partial(self.get_service(endpoint, version, path).list, **kwargs)

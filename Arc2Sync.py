@@ -116,25 +116,24 @@ class Arc2Sync:
                 if match["source"] is None:
                     if match["target"].details.get("keep_until", None) is None or \
                                     match["target"].details.get("keep_until") < datetime.now():
-                        self.interface.put("DELETE: " + str(match["target"]))
                         if do:
                             self.target_factory.delete(match["target"])
+                        self.interface.put("DELETED: " + str(match["target"]))
 
         if mode in {"check", "sync"}:
             for match in iter(matches):
                 if match["target"] is None:
-                    self.interface.put("CREATE: " + str(match["source"]))
                     if do:
                         self.target_factory.put(match["source"])
+                    self.interface.put("CREATED: " + str(match["source"]))
 
         if mode in {"check", "sync", "tweak", "fix"}:
             for match in iter(matches):
                 if match["target"] is not None and match["source"] is not None:
                     if match["target"].enrich(match["source"]):
-                        self.interface.put("UPDATE: " + str(match["target"]))
                         if do:
                             self.target_factory.patch(match["target"])
-
+                        self.interface.put("UPDATED: " + str(match["target"]))
 
 if __name__ == "__main__":
     print("## Building sync engine.")
