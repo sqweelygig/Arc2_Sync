@@ -15,6 +15,7 @@ class SimsStaff(SimsBase):
     def map(item):
         from lib.item.Staff import Staff
         from _md5 import md5
+        from lib.item.User import Helper
         output = SimsBase.map(item)
         if output.find("Prevent").text == "False" \
                 and output.find("Surname").text is not None \
@@ -28,7 +29,7 @@ class SimsStaff(SimsBase):
                     "nihash": m.hexdigest(),
                 },
                 "details": {
-                    "forename": output.find("Forename").text,
+                    "forename": Helper.abbreviate(output.find("Forename").text),
                     "surname": output.find("Surname").text,
                 },
             }

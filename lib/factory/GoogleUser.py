@@ -1,0 +1,95 @@
+from lib.factory.GoogleBase import GoogleBase
+
+
+class GoogleUser(GoogleBase):
+    def __init__(self, connection, item_settings, domain):
+        try:
+            super().__init__(connection, item_settings)
+        except NotImplementedError:
+            pass
+        self.domain = domain
+
+    @staticmethod
+    def get_requirements():
+        return GoogleBase.get_requirements() | {"domain"}
+
+    # TODO Combine common elements of below
+
+    def get_list_arguments(self):
+        return {
+            "domain": self.domain,
+            "endpoint": "admin",
+            "version": "directory_v1",
+            "path": ["users"],
+            "key": "users",
+        }
+
+    def get_patch_arguments(self, item):
+        return {
+            "userKey": item.ids["username"] + "@" + self.domain,
+            "endpoint": "admin",
+            "version": "directory_v1",
+            "path": ["users"]
+        }
+
+    def get_delete_arguments(self, item):
+        return {
+            "endpoint": "admin",
+            "version": "directory_v1",
+            "path": ["users"],
+            "userKey": item.ids["username"] + "@" + self.domain,
+        }
+
+    def get_put_arguments(self, item):
+        patch = self.unmap(item)
+        # TODO something about username collisions, probably already half implemented in Student.py>Username
+        username = item.get("username")
+        patch["primaryEmail"] = username + "@" + self.domain
+        item.ids["username"] = username
+        patch["password"] = item.get("password")
+        return {
+            "endpoint": "admin",
+            "version": "directory_v1",
+            "path": ["users"],
+            "body": patch,
+        }
+
+    @staticmethod
+    def map(item):
+        from datetime import datetime
+        from datetime import timedelta
+        output = GoogleBase.map(item)
+        output = {
+            "ids": {
+                "google": output["id"],
+                "username": output["primaryEmail"].split("@")[0],
+            },
+            "details": {
+                "forename": output["name"]["givenName"],
+                "surname": output["name"]["familyName"],
+                "username": output["primaryEmail"].split("@")[0],
+                "keep_until":
+                    datetime.strptime(output["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z')
+                    # TODO Put this into settings
+                    + timedelta(days=100)
+                ,
+            },
+        }
+        for external_id in item.get("externalIds", []):
+            if external_id["customType"] is not "null":
+                output["ids"][external_id["customType"].lower()] = external_id["value"]
+        return output
+
+    @staticmethod
+    def unmap(item):
+        output = {
+            "externalIds": [],
+            "name": {"givenName": item.details["forename"], "familyName": item.details["surname"]}
+        }
+        for external_id in item.ids:
+            output["externalIds"].append({
+                "type": "custom",
+                "customType": external_id,
+                "value": item.ids[external_id]
+            })
+        return output
