@@ -1,5 +1,5 @@
 def get_requirements(name):
-    from aliases import alias
+    from lib.aliases import alias
     from importlib import import_module
     name = alias(name)
     module = import_module("lib.connection." + name)
@@ -7,7 +7,7 @@ def get_requirements(name):
 
 
 def build_connection(name, interface, root_dir, settings):
-    from aliases import alias
+    from lib.aliases import alias
     from importlib import import_module
     from os import path
     name = alias(name)
@@ -30,7 +30,7 @@ class Connection:
         raise NotImplementedError()
 
     def build_factory(self, name, factory_settings, item_settings):
-        from aliases import alias
+        from lib.aliases import alias
         from importlib import import_module
         connection_name = type(self).__name__
         item_name = alias(name)

@@ -1,5 +1,5 @@
 def get_requirements(name):
-    from aliases import alias
+    from lib.aliases import alias
     from importlib import import_module
     name = alias(name)
     module = import_module("lib.item." + name)

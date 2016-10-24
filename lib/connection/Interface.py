@@ -7,3 +7,7 @@ class Interface(Connection):
             super().__init__(interface, root_dir)
         except NotImplementedError:
             pass
+
+    def build_factory(self, name, factory_settings, item_settings):
+        from lib.factory.InterfaceBase import InterfaceBase
+        return InterfaceBase(self, item_settings)

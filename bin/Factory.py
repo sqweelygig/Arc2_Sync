@@ -1,11 +1,14 @@
 def get_requirements(connection_name, item_name):
-    from aliases import alias
+    from lib.aliases import alias
     from importlib import import_module
     connection_name = alias(connection_name)
     item_name = alias(item_name)
     name = connection_name + item_name
-    module = import_module("lib.factory." + name)
-    return getattr(module, name).get_requirements()
+    try:
+        module = import_module("lib.factory." + name)
+        return getattr(module, name).get_requirements()
+    except ImportError:
+        return Factory.get_requirements()
 
 
 class FactoryReadOnly:
