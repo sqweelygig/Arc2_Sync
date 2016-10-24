@@ -32,26 +32,27 @@ class Sims(Connection):
             command,
             "/USER:" + self.username,
             "/PASSWORD:" + self.password,
-            "/REPORT:arc2sync_" + key,
-            "/OUTPUT:" + path.join(self.paths["definitions"], "arc2sync_" + key + ".xml"),
+            "/REPORT:_arc2sync_" + key,
+            "/OUTPUT:" + path.join(self.paths["definitions"], "_arc2sync_" + key + ".xml"),
             "/PARAMDEF",
         ])
         if substitutions is not None:
-            parameter_document = ElementTree.parse(path.join(self.paths["definitions"], "arc2sync_" + key + ".xml"))
+            parameter_document = ElementTree.parse(path.join(self.paths["definitions"], "_arc2sync_" + key + ".xml"))
             parameter_root = parameter_document.getroot()
             for parameter in parameter_root.findall("Parameter"):
                 if parameter.attrib["id"] in substitutions:
                     parameter.set('bypass', 'FALSE')
                     for field in substitutions[parameter.attrib["id"]]:
                         parameter.find('Values').find(field).text = substitutions[parameter.attrib["id"]][field]
-            parameter_document.write(path.join(self.paths["definitions"], "arc2sync_" + key + ".xml"))
+            parameter_document.write(path.join(self.paths["definitions"], "_arc2sync_" + key + ".xml"))
         run([
             command,
             "/USER:" + self.username,
             "/PASSWORD:" + self.password,
-            "/REPORT:arc2sync_" + key,
-            "/OUTPUT:" + path.join(self.paths["data"], "arc2sync_" + key + ".xml"),
-            "/PARAMFILE:" + path.join(self.paths["definitions"], "arc2sync_" + key + ".xml"),
+            "/REPORT:_arc2sync_" + key,
+            "/OUTPUT:" + path.join(self.paths["data"], "_arc2sync_" + key + ".xml"),
+            "/PARAMFILE:" + path.join(self.paths["definitions"], "_arc2sync_" + key + ".xml"),
         ])
-        root = ElementTree.parse(path.join(self.paths["data"], "arc2sync_" + key + ".xml")).getroot()
+        root = ElementTree.parse(path.join(self.paths["data"], "_arc2sync_" + key + ".xml")).getroot()
+        # TODO Tidy up data if debug is not true
         return root.findall("Record")

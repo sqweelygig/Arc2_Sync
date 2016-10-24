@@ -1,7 +1,7 @@
 from lib.factory.SimsBase import SimsBase
 
 
-class SimsStudent(SimsBase):
+class SimsStaff(SimsBase):
     def __init__(self, connection, item_settings):
         try:
             super().__init__(connection, item_settings)
@@ -9,35 +9,29 @@ class SimsStudent(SimsBase):
             pass
 
     def list(self):
-        return self.connection.list("students")
+        return self.connection.list("staff")
 
     @staticmethod
     def map(item):
-        from lib.item.Student import Student
-        from datetime import datetime
+        from lib.item.Staff import Staff
+        from _md5 import md5
         output = SimsBase.map(item)
-        if output.find("Prevent").text == "False"\
+        if output.find("Prevent").text == "False" \
                 and output.find("Surname").text is not None \
                 and output.find("Forename").text is not None \
-                and output.find("DOB").text is not None \
                 and output.find("Surname").text[:1] != "$":
-            dob = datetime.strptime(output.find("DOB").text[0:10], '%Y-%m-%d')
-            if dob.month > 8:
-                intake_after_dob = dob.year + 1
-            else:
-                intake_after_dob = dob.year
-            cohort = (intake_after_dob + 11) % 1000
+            m = md5()
+            m.update(output.find("NI").text.encode("utf-8"))
             output = {
                 "ids": {
                     "sims": output.find("primary_id").text,
-                    "admissionnumber": output.find("Adno").text,
+                    "nihash": m.hexdigest(),
                 },
                 "details": {
                     "forename": output.find("Forename").text,
                     "surname": output.find("Surname").text,
-                    "cohort": cohort,
                 },
             }
         else:
             return None
-        return Student(**output)
+        return Staff(**output)

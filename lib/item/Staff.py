@@ -1,5 +1,5 @@
 from lib.item.User import User
 
 
-class Student(User):
+class Staff(User):
     pass

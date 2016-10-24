@@ -2,5 +2,5 @@ from lib.factory.InterfaceBase import InterfaceBase
 
 
 # noinspection PyAbstractClass
-class InterfaceStudent(InterfaceBase):
+class InterfaceStaff(InterfaceBase):
     pass
