@@ -70,8 +70,8 @@ class Arc2Sync:
 
     def gather(self):
         return {
-            "source": self.source_factory.get(),
-            "target": self.target_factory.get(),
+            "source": self.source_factory.list(),
+            "target": self.target_factory.list(),
         }
 
     def match(self, candidates):

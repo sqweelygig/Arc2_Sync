@@ -12,7 +12,7 @@ class SimsCourse(SimsBase):
             "staff": SimsStaff(connection, {})
         }
 
-    def list(self):
+    def fetch(self):
         return self.connection.list("courses")
 
     def map(self, item):

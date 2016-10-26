@@ -2,6 +2,9 @@ from bin.Factory import Factory
 
 
 class GoogleBase(Factory):
+    def fetch(self):
+        return self.connection.list(**self.get_list_arguments())
+
     def patch(self, item):
         self.connection.patch(body=self.unmap(item), **self.get_patch_arguments(item))
 
@@ -10,15 +13,6 @@ class GoogleBase(Factory):
 
     def put(self, item):
         self.connection.insert(**self.get_put_arguments(item))
-
-    def get(self):
-        items = self.connection.list(**self.get_list_arguments())
-        output = []
-        for item in items:
-            value = self.map(item)
-            if value is not None:
-                output.append(value)
-        return output
 
     def get_list_arguments(self):
         raise NotImplementedError
@@ -35,8 +29,7 @@ class GoogleBase(Factory):
     def __init__(self, connection, settings):
         super().__init__(connection, settings)
 
-    @staticmethod
-    def map(item):
+    def map(self, item):
         return item
 
     @staticmethod

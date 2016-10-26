@@ -8,28 +8,28 @@ class SimsStaff(SimsBase):
         except NotImplementedError:
             pass
 
-    def list(self):
+    def fetch(self):
         return self.connection.list("staff")
 
     def map(self, item):
         from lib.item.Staff import Staff
         from _md5 import md5
         from lib.item.User import Helper
-        output = super().map(item)
-        if output.find("Prevent").text == "False" \
-                and output.find("Surname").text is not None \
-                and output.find("Forename").text is not None \
-                and output.find("Surname").text[:1] != "$":
+        item = super().map(item)
+        if item.find("Prevent").text == "False" \
+                and item.find("Surname").text is not None \
+                and item.find("Forename").text is not None \
+                and item.find("Surname").text[:1] != "$":
             m = md5()
-            m.update(output.find("NI").text.encode("utf-8"))
+            m.update(item.find("NI").text.encode("utf-8"))
             output = {
                 "ids": {
-                    "sims": output.find("primary_id").text,
+                    "sims": item.find("primary_id").text,
                     "nihash": m.hexdigest(),
                 },
                 "details": {
-                    "forename": Helper.abbreviate(output.find("Forename").text),
-                    "surname": output.find("Surname").text,
+                    "forename": Helper.abbreviate(item.find("Forename").text),
+                    "surname": item.find("Surname").text,
                 },
             }
         else:

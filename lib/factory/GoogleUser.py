@@ -54,11 +54,10 @@ class GoogleUser(GoogleBase):
             "body": patch,
         }
 
-    @staticmethod
-    def map(item):
+    def map(self, item):
         from datetime import datetime
         from datetime import timedelta
-        output = GoogleBase.map(item)
+        output = super().map(item)
         output = {
             "ids": {
                 "google": output["id"],
@@ -71,8 +70,7 @@ class GoogleUser(GoogleBase):
                 "keep_until":
                     datetime.strptime(output["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z')
                     # TODO Put this into settings
-                    + timedelta(days=100)
-                ,
+                    + timedelta(days=100),
             },
         }
         for external_id in item.get("externalIds", []):

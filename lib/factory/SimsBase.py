@@ -9,24 +9,7 @@ class SimsBase(FactoryReadOnly):
             pass
         self.items = None
 
-    def get(self, find=None):
-        if self.items is None:
-            self.items = self.list()
-        if find is None:
-            output = []
-            for item in self.items:
-                value = self.map(item)
-                if value is not None:
-                    output.append(value)
-        else:
-            output = None
-            for item in self.items:
-                value = self.map(item)
-                if value is not None and find == value:
-                    output = value
-        return output
-
-    def list(self):
+    def fetch(self):
         raise NotImplementedError
 
     def map(self, item):
