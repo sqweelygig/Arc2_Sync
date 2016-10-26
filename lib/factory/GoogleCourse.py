@@ -110,8 +110,4 @@ class GoogleCourse(GoogleBase):
                 return None
 
     def can_update(self, update):
-        # Only update when ids change, the details (ownerId, name) we shouldn't or can't change
-        if len(update["ids"]) > 0:
-            return super().can_update(update)
-        else:
-            return False
+        return super()._can_update(update, (), ("name", "teacher"))

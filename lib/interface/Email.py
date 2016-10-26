@@ -50,10 +50,11 @@ class Email(Interface):
             server.ehlo()
             server.starttls()
             server.login(self.username, self.password)
-            server.sendmail(self.username, self.to_address, "\r\n".join([
+            msg = "\r\n".join([
                 "From: " + self.username,
                 "To: " + self.to_address,
                 "Subject: Arc Synchronise Results",
                 "",
                 self.body,
-            ]))
+            ])
+            server.sendmail(self.username, self.to_address, msg.encode('utf-8'))

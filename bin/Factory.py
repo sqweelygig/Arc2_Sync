@@ -46,7 +46,18 @@ class FactoryReadOnly:
         raise NotImplementedError
 
     def can_update(self, update):
-        return len(update["ids"]) > 0 or len(update["details"]) > 0
+        return self._can_update(update)
+
+    @staticmethod
+    def _can_update(update, ignore_ids=(), ignore_details=()):
+        for key in update["ids"]:
+            if key not in ignore_ids:
+                return True
+        for key in update["details"]:
+            if key not in ignore_details:
+                return True
+        # Either update was empty or everything was in an ignore
+        return False
 
 
 class Factory(FactoryReadOnly):
