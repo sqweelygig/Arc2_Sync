@@ -94,7 +94,7 @@ class Arc2Sync:
                         if item_focus == item_possible:
                             match[section_possible_key] = item_possible
                             candidates[section_possible_key].remove(item_possible)
-                            self.interface.reassure(str(item_focus) + ", " + str(item_possible))
+                            self.interface.reassure("Paired " + str(len(matches)) + " items")
                             break
                 matches.append(match)
             sections_done_keys.add(section_focus)
@@ -114,8 +114,8 @@ class Arc2Sync:
         if mode in {"check", "sync"}:
             for match in iter(matches):
                 if match["source"] is None:
-                    if match["target"].details.get("keep_until", None) is None or \
-                                    match["target"].details.get("keep_until") < datetime.now():
+                    if match["target"].details.get("keep_until", None) is None \
+                            or match["target"].details.get("keep_until") < datetime.now():
                         if do:
                             self.target_factory.delete(match["target"])
                         self.interface.put("DELETED: " + str(match["target"]))
@@ -130,7 +130,7 @@ class Arc2Sync:
         if mode in {"check", "sync", "tweak", "fix"}:
             for match in iter(matches):
                 if match["target"] is not None and match["source"] is not None:
-                    if match["target"].enrich(match["source"]):
+                    if self.target_factory.can_update(match["target"].enrich(match["source"])):
                         if do:
                             self.target_factory.patch(match["target"])
                         self.interface.put("UPDATED: " + str(match["target"]))

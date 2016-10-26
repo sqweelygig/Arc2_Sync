@@ -35,16 +35,19 @@ class Item:
         }.__str__()
 
     def enrich(self, other):
-        enriched = False
+        updates = {
+            "ids": [],
+            "details": [],
+        }
         for key in other.ids:
             if self.ids.get(key) != other.ids.get(key):
-                enriched = enriched or key in self.ids
+                updates["ids"].append(key)
+                self.ids[key] = other.details[key]
         for key in other.details:
-            # TODO The logic of these two lines is not pretty, but works.  I'd like them to be both.
             if self.details.get(key) != other.details.get(key):
-                enriched = enriched or (key in self.details) or (key in self.get_core_fields())
+                updates["details"].append(key)
                 self.details[key] = other.details[key]
-        return enriched
+        return updates
 
     def get(self, key):
         if key not in self.details:

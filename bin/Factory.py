@@ -45,6 +45,9 @@ class FactoryReadOnly:
     def map(self, item):
         raise NotImplementedError
 
+    def can_update(self, update):
+        return len(update["ids"]) > 0 or len(update["details"]) > 0
+
 
 class Factory(FactoryReadOnly):
     def __init__(self, connection, item_settings):
