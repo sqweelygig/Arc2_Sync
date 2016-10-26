@@ -108,7 +108,7 @@ class Arc2Sync:
         if mode in {"fix"}:
             for match in iter(matches):
                 if match["target"] is None:
-                    # ask, map match["source"]
+                    # TODO ask, map match["source"]
                     pass
 
         if mode in {"check", "sync"}:
