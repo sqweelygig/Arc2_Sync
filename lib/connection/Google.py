@@ -63,10 +63,12 @@ class Google(Connection):
         # Iterate around the pages that list gives
         output = []
         next_page = True
+        pages = 1
         while bool(next_page):
             response = task().execute() if next_page is True else task(pageToken=next_page).execute()
             next_page = response.get("nextPageToken", False)
-            self.interface.reassure(next_page)
+            self.interface.reassure("Found " + str(pages) + " page(s) of " + key)
+            pages += 1
             output += response.get(key, [])
 
         return output

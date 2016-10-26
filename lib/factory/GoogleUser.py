@@ -57,18 +57,18 @@ class GoogleUser(GoogleBase):
     def map(self, item):
         from datetime import datetime
         from datetime import timedelta
-        output = super().map(item)
+        item = super().map(item)
         output = {
             "ids": {
-                "google": output["id"],
-                "username": output["primaryEmail"].split("@")[0],
+                "google": item["id"],
+                "username": item["primaryEmail"].split("@")[0],
             },
             "details": {
-                "forename": output["name"]["givenName"],
-                "surname": output["name"]["familyName"],
-                "username": output["primaryEmail"].split("@")[0],
+                "forename": item["name"]["givenName"],
+                "surname": item["name"]["familyName"],
+                "username": item["primaryEmail"].split("@")[0],
                 "keep_until":
-                    datetime.strptime(output["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z')
+                    datetime.strptime(item["lastLoginTime"], '%Y-%m-%dT%H:%M:%S.000Z')
                     # TODO Put this into settings
                     + timedelta(days=100),
             },

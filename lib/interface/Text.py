@@ -37,10 +37,8 @@ class Text(InterfaceAntiWhizz):
         return self.input_obfuscated() if "password" in key else self.input_standard()
 
     def reassure(self, output=""):
-        if len(str(output)) > self.console_width:
-            super().reassure(str(output)[0:self.console_width-3] + "...")
-        else:
-            super().reassure(output)
+        from time import strftime
+        super().reassure(strftime("%c") + " - " + output)
 
 
 class TextTestCase(TestCase):
