@@ -7,19 +7,27 @@ class SimsBase(FactoryReadOnly):
             super().__init__(connection, item_settings)
         except NotImplementedError:
             pass
+        self.items = None
 
-    def get(self):
-        items = self.list()
-        output = []
-        for item in items:
-            value = self.map(item)
-            if value is not None:
-                output.append(value)
+    def get(self, find=None):
+        if self.items is None:
+            self.items = self.list()
+        if find is None:
+            output = []
+            for item in self.items:
+                value = self.map(item)
+                if value is not None:
+                    output.append(value)
+        else:
+            output = None
+            for item in self.items:
+                value = self.map(item)
+                if value is not None and find == value:
+                    output = value
         return output
 
     def list(self):
         raise NotImplementedError
 
-    @staticmethod
-    def map(item):
+    def map(self, item):
         return item

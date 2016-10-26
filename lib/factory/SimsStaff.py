@@ -11,12 +11,11 @@ class SimsStaff(SimsBase):
     def list(self):
         return self.connection.list("staff")
 
-    @staticmethod
-    def map(item):
+    def map(self, item):
         from lib.item.Staff import Staff
         from _md5 import md5
         from lib.item.User import Helper
-        output = SimsBase.map(item)
+        output = super().map(item)
         if output.find("Prevent").text == "False" \
                 and output.find("Surname").text is not None \
                 and output.find("Forename").text is not None \

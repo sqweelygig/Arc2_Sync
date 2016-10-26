@@ -11,11 +11,10 @@ class SimsStudent(SimsBase):
     def list(self):
         return self.connection.list("students")
 
-    @staticmethod
-    def map(item):
+    def map(self, item):
         from lib.item.Student import Student
         from datetime import datetime
-        output = SimsBase.map(item)
+        output = super().map(item)
         if output.find("Prevent").text == "False"\
                 and output.find("Surname").text is not None \
                 and output.find("Forename").text is not None \

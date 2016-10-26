@@ -11,10 +11,13 @@ class Item:
     def get_requirements():
         return set()
 
-    def __init__(self, ids, details):
-        for key in self.get_core_fields():
-            if details[key] is None:
-                raise IndexError
+    def __init__(self, ids, details=None, partial=False):
+        if details is None:
+            details = {}
+        if not partial:
+            for key in self.get_core_fields():
+                if details[key] is None:
+                    raise IndexError
         self.ids = ids
         self.details = details
         raise NotImplementedError()
