@@ -66,11 +66,17 @@ class GoogleCourse(GoogleBase):
     def get_requirements():
         return GoogleStaff.get_requirements()
 
-    def get_list_arguments(self):
+    @staticmethod
+    def get_common_arguments():
         return {
             "endpoint": "classroom",
             "version": "v1",
             "path": ["courses"],
+        }
+
+    def get_list_arguments(self):
+        return {
+            **self.get_common_arguments(),
             "key": "courses",
         }
 

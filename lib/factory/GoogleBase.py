@@ -6,10 +6,10 @@ class GoogleBase(Factory):
         return self.connection.list(**self.get_list_arguments())
 
     def patch(self, item):
-        self.connection.patch(body=self.unmap(item), **self.get_patch_arguments(item))
+        self.connection.patch(**self.get_patch_arguments(item))
 
     def delete(self, item):
-        self.connection.delete(**self.get_delete_arguments(item))
+        self.connection.patch(**self.get_delete_arguments(item))
 
     def put(self, item):
         self.connection.insert(**self.get_put_arguments(item))

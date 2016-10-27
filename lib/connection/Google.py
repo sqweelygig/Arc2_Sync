@@ -50,8 +50,8 @@ class Google(Connection):
     def patch(self, endpoint, version, path, **kwargs):
         self.get_service(endpoint, version, path).patch(**kwargs).execute()
 
-    def delete(self, endpoint, version, path, **kwargs):
-        self.get_service(endpoint, version, path).delete(**kwargs).execute()
+    # def delete(self, endpoint, version, path, **kwargs):
+        # self.get_service(endpoint, version, path).delete(**kwargs).execute()
 
     def insert(self, endpoint, version, path, **kwargs):
         self.get_service(endpoint, version, path).insert(**kwargs).execute()
