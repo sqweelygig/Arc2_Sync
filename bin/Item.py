@@ -23,6 +23,8 @@ class Item:
         raise NotImplementedError()
 
     def __eq__(self, other):
+        if other is None:
+            return False
         for key, value in self.ids.items():
             if other.ids.get(key) == value:
                 return True

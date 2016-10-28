@@ -58,7 +58,7 @@ class GoogleUser(GoogleBase):
         }
 
     def map(self, item):
-        # TODO Check for suspended
+        # TODO This should return User objects
         # from datetime import datetime
         # from datetime import timedelta
         item = super().map(item)

@@ -1,4 +1,5 @@
 from bin.Connection import Connection
+from googleapiclient.errors import HttpError
 
 
 class Google(Connection):
@@ -48,13 +49,31 @@ class Google(Connection):
         return service
 
     def patch(self, endpoint, version, path, **kwargs):
-        self.get_service(endpoint, version, path).patch(**kwargs).execute()
+        errors = 0
+        to_send = True
+        while to_send:
+            try:
+                self.get_service(endpoint, version, path).patch(**kwargs).execute()
+                to_send = False
+            except HttpError:
+                errors += 1
+                if errors > 10:
+                    raise HttpError
 
     # def delete(self, endpoint, version, path, **kwargs):
         # self.get_service(endpoint, version, path).delete(**kwargs).execute()
 
     def insert(self, endpoint, version, path, **kwargs):
-        self.get_service(endpoint, version, path).insert(**kwargs).execute()
+        errors = 0
+        to_send = True
+        while to_send:
+            try:
+                self.get_service(endpoint, version, path).insert(**kwargs).execute()
+                to_send = False
+            except HttpError:
+                errors += 1
+                if errors > 10:
+                    raise HttpError
 
     def list(self, endpoint, version, path, key, **kwargs):
         from functools import partial
@@ -64,11 +83,18 @@ class Google(Connection):
         output = []
         next_page = True
         pages = 1
+
         while bool(next_page):
-            response = task().execute() if next_page is True else task(pageToken=next_page).execute()
-            next_page = response.get("nextPageToken", False)
-            self.interface.reassure("Found " + str(pages) + " page(s) of " + key)
-            pages += 1
-            output += response.get(key, [])
+            errors = 0
+            try:
+                response = task().execute() if next_page is True else task(pageToken=next_page).execute()
+                next_page = response.get("nextPageToken", False)
+                self.interface.reassure("Found " + str(pages) + " page(s) of " + key)
+                pages += 1
+                output += response.get(key, [])
+            except HttpError:
+                errors += 1
+                if errors > 10:
+                    raise HttpError
 
         return output
