@@ -26,6 +26,8 @@ class Email(Interface):
             super().reassure(output)
         except NotImplementedError:
             pass
+        from time import strftime
+        print(strftime("%c") + " - " + output)
 
     def put(self, output=""):
         try:

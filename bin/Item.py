@@ -25,7 +25,7 @@ class Item:
     def __eq__(self, other):
         if other is None:
             return False
-        for key, value in self.ids.items():
+        for key, value in iter(self.ids.items()):
             if other.ids.get(key) == value:
                 return True
         return False

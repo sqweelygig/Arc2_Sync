@@ -1,3 +1,4 @@
+from googleapiclient.errors import HttpError
 from bin.Item import Item
 from lib.factory.GoogleBase import GoogleBase
 from lib.factory.GoogleStaff import GoogleStaff
@@ -52,6 +53,7 @@ class Alias(Item):
             pass
 
 
+# TODO Make this understand archived
 class GoogleCourse(GoogleBase):
     def __init__(self, connection, item_settings, domain):
         try:
@@ -81,13 +83,46 @@ class GoogleCourse(GoogleBase):
         }
 
     def get_patch_arguments(self, item):
-        raise NotImplementedError
+        return {
+            **self.get_common_arguments(),
+            "id": "p:sims:course:"+item.ids["sims"],
+            "updateMask": "courseState",
+            "body": {
+                "courseState": "PROVISIONED",
+            },
+        }
 
     def get_put_arguments(self, item):
-        raise NotImplementedError
+        return {
+            **self.get_common_arguments(),
+            "body": self.unmap(item),
+        }
 
     def get_delete_arguments(self, item):
-        raise NotImplementedError
+        return {
+            **self.get_common_arguments(),
+            "id": item.ids["google"],
+            "updateMask": "courseState",
+            "body": {
+                "courseState": "ARCHIVED",
+            },
+        }
+
+    def put(self, item):
+        try:
+            super().put(item)
+        except HttpError:
+            super().patch(item)
+
+    def unmap(self, item):
+        item.details["teacher"] = self.sub_factories["staff"].get(item.details["teacher"])
+        output = {
+            # TODO make this line understand multiple origins
+            "id": "p:sims:course:"+item.ids["sims"],
+            "name": item.details["name"],
+            "ownerId": item.details["teacher"].ids["google"],
+        }
+        return output
 
     def map(self, item):
         from lib.item.Course import Course

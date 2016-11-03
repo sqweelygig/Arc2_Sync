@@ -32,6 +32,5 @@ class GoogleBase(Factory):
     def map(self, item):
         return item
 
-    @staticmethod
-    def unmap(item):
+    def unmap(self, item):
         return item

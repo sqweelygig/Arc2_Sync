@@ -116,30 +116,27 @@ class Arc2Sync:
                 if match["source"] is None:
                     if match["target"].details.get("keep_until", None) is None \
                             or match["target"].details.get("keep_until") < datetime.now():
+                        self.interface.put("DELETE: " + str(match["target"]))
                         if do:
                             self.target_factory.delete(match["target"])
-                            self.interface.put("DELETED: " + str(match["target"]))
-                        else:
-                            self.interface.put("DELETE: " + str(match["target"]))
+                            self.interface.put("DONE.")
 
         if mode in {"check", "sync"}:
             for match in iter(matches):
                 if match["target"] is None:
+                    self.interface.put("CREATE: " + str(match["source"]))
                     if do:
                         self.target_factory.put(match["source"])
-                        self.interface.put("CREATED: " + str(match["source"]))
-                    else:
-                        self.interface.put("CREATE: " + str(match["source"]))
+                        self.interface.put("DONE.")
 
         if mode in {"check", "sync", "tweak", "fix"}:
             for match in iter(matches):
                 if match["target"] is not None and match["source"] is not None:
                     if self.target_factory.can_update(match["target"].enrich(match["source"])):
+                        self.interface.put("UPDATE: " + str(match["target"]))
                         if do:
                             self.target_factory.patch(match["target"])
-                            self.interface.put("UPDATED: " + str(match["target"]))
-                        else:
-                            self.interface.put("UPDATE: " + str(match["target"]))
+                            self.interface.put("DONE.")
 
 
 if __name__ == "__main__":

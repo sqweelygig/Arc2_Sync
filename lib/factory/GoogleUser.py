@@ -13,8 +13,6 @@ class GoogleUser(GoogleBase):
     def get_requirements():
         return GoogleBase.get_requirements() | {"domain"}
 
-    # TODO Combine common elements of below
-
     @staticmethod
     def get_common_arguments():
         return {
@@ -34,6 +32,7 @@ class GoogleUser(GoogleBase):
         return {
             **self.get_common_arguments(),
             "userKey": item.ids["username"] + "@" + self.domain,
+            "body": self.unmap(item),
         }
 
     def get_delete_arguments(self, item):
@@ -42,10 +41,11 @@ class GoogleUser(GoogleBase):
             "userKey": item.ids["username"] + "@" + self.domain,
             "body": {
                 "suspended": True,
-            }
+            },
         }
 
     def get_put_arguments(self, item):
+        # TODO Make this cope with suspended accounts?
         patch = self.unmap(item)
         # TODO something about username collisions, probably already half implemented in Student.py>Username
         username = item.get("username")
@@ -82,8 +82,7 @@ class GoogleUser(GoogleBase):
                 output["ids"][external_id["customType"].lower()] = external_id["value"]
         return output if not item["suspended"] else None
 
-    @staticmethod
-    def unmap(item):
+    def unmap(self, item):
         output = {
             "externalIds": [],
             "name": {"givenName": item.details["forename"], "familyName": item.details["surname"]}

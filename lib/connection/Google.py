@@ -58,7 +58,7 @@ class Google(Connection):
             except HttpError:
                 errors += 1
                 if errors > 10:
-                    raise HttpError
+                    raise
 
     # def delete(self, endpoint, version, path, **kwargs):
         # self.get_service(endpoint, version, path).delete(**kwargs).execute()
@@ -68,12 +68,16 @@ class Google(Connection):
         to_send = True
         while to_send:
             try:
-                self.get_service(endpoint, version, path).insert(**kwargs).execute()
+                service = self.get_service(endpoint, version, path)
+                if hasattr(service, "insert"):
+                    service.insert(**kwargs).execute()
+                elif hasattr(service, "create"):
+                    service.create(**kwargs).execute()
                 to_send = False
             except HttpError:
                 errors += 1
                 if errors > 10:
-                    raise HttpError
+                    raise
 
     def list(self, endpoint, version, path, key, **kwargs):
         from functools import partial
@@ -95,6 +99,6 @@ class Google(Connection):
             except HttpError:
                 errors += 1
                 if errors > 10:
-                    raise HttpError
+                    raise
 
         return output
