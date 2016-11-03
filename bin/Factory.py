@@ -16,6 +16,7 @@ class FactoryReadOnly:
         self.connection = connection
         self.item_settings = item_settings
         self.items = None
+        self.indexed_items = None
         raise NotImplementedError
 
     @staticmethod
@@ -23,10 +24,16 @@ class FactoryReadOnly:
         return set()
 
     def get(self, find):
+        if self.indexed_items is None:
+            self.indexed_items = {}
+            for item in self.list():
+                for id_key in item.ids:
+                    if self.indexed_items.get(id_key, None) is None:
+                        self.indexed_items[id_key] = {}
+                    self.indexed_items[id_key][item.ids[id_key]] = item
         output = None
-        for item in self.list():
-            if find == item:
-                output = item
+        for id_key in find.ids:
+            output = output or self.indexed_items[id_key].get(find.ids[id_key], None)
         return output
 
     def list(self):
