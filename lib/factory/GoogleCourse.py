@@ -62,6 +62,7 @@ class GoogleCourse(GoogleBase):
             pass
         self.sub_factories = {
             "staff": GoogleStaff(connection, {}, domain),
+            "aliases": {},
         }
 
     @staticmethod
@@ -131,7 +132,9 @@ class GoogleCourse(GoogleBase):
         if item["courseState"] in {"ARCHIVED"}:
             return None
         else:
-            aliases_factory = GoogleAlias(self.connection, {}, item["id"])
+            if self.sub_factories["aliases"].get(item["id"], None) is None:
+                self.sub_factories["aliases"][item["id"]] = GoogleAlias(self.connection, {}, item["id"])
+            aliases_factory = self.sub_factories["aliases"][item["id"]]
             item = {
                 "ids": {
                     "google": item["id"]

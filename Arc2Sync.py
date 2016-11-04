@@ -29,7 +29,7 @@ class Arc2Sync:
         target_factory_settings = self.settings.get_many(
             get_factory_requirements(self.settings.get("to"), self.settings.get("sync"))
         )
-        self.settings.get("mode", '^(sync|fix|check|tweak)$')
+        self.settings.get("mode", '^(sync|fix|check|tweak|make|purge)$')
         self.settings.get("root_dir")
 
         # Make connections
@@ -111,7 +111,7 @@ class Arc2Sync:
                     # TODO ask, map match["source"]
                     pass
 
-        if mode in {"check", "sync"}:
+        if mode in {"check", "sync", "purge"}:
             for match in iter(matches):
                 if match["source"] is None:
                     if match["target"].details.get("keep_until", None) is None \
@@ -121,7 +121,7 @@ class Arc2Sync:
                             self.target_factory.delete(match["target"])
                             self.interface.put("DONE.")
 
-        if mode in {"check", "sync"}:
+        if mode in {"check", "sync", "make"}:
             for match in iter(matches):
                 if match["target"] is None:
                     self.interface.put("CREATE: " + str(match["source"]))
