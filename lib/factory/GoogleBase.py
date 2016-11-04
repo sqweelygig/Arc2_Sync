@@ -26,8 +26,8 @@ class GoogleBase(Factory):
     def get_put_arguments(self, item):
         raise NotImplementedError
 
-    def __init__(self, connection, settings):
-        super().__init__(connection, settings)
+    def __init__(self, connection, interface, settings):
+        super().__init__(connection, interface, settings)
 
     def map(self, item):
         return item

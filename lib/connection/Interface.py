@@ -10,4 +10,4 @@ class Interface(Connection):
 
     def build_factory(self, name, factory_settings, item_settings):
         from lib.factory.InterfaceBase import InterfaceBase
-        return InterfaceBase(self, item_settings)
+        return InterfaceBase(self, self.interface, item_settings)

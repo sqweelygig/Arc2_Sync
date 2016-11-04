@@ -12,9 +12,10 @@ def get_requirements(connection_name, item_name):
 
 
 class FactoryReadOnly:
-    def __init__(self, connection, item_settings):
+    def __init__(self, connection, interface, item_settings):
         self.connection = connection
         self.item_settings = item_settings
+        self.interface = interface
         self.items = None
         self.indexed_items = None
         raise NotImplementedError
@@ -44,6 +45,7 @@ class FactoryReadOnly:
             value = self.map(item)
             if value is not None:
                 output.append(value)
+                self.interface.reassure(str(value))
         return output
 
     def fetch(self):
@@ -68,9 +70,9 @@ class FactoryReadOnly:
 
 
 class Factory(FactoryReadOnly):
-    def __init__(self, connection, item_settings):
+    def __init__(self, connection, interface, item_settings):
         try:
-            super().__init__(connection, item_settings)
+            super().__init__(connection, interface, item_settings)
         except NotImplementedError:
             pass
         raise NotImplementedError

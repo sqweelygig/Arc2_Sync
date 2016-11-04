@@ -37,9 +37,9 @@ class GoogleAlias(GoogleBase):
     def get_requirements():
         return GoogleBase.get_requirements() | {"course_id"}
 
-    def __init__(self, connection, item_settings, course_id):
+    def __init__(self, connection, interface, item_settings, course_id):
         try:
-            super().__init__(connection, item_settings)
+            super().__init__(connection, interface, item_settings)
         except NotImplementedError:
             pass
         self.course_id = course_id
@@ -55,13 +55,13 @@ class Alias(Item):
 
 # TODO Make this understand archived
 class GoogleCourse(GoogleBase):
-    def __init__(self, connection, item_settings, domain):
+    def __init__(self, connection, interface, item_settings, domain):
         try:
-            super().__init__(connection, item_settings)
+            super().__init__(connection, interface, item_settings)
         except NotImplementedError:
             pass
         self.sub_factories = {
-            "staff": GoogleStaff(connection, {}, domain),
+            "staff": GoogleStaff(connection, interface, {}, domain),
             "aliases": {},
         }
 
@@ -133,7 +133,7 @@ class GoogleCourse(GoogleBase):
             return None
         else:
             if self.sub_factories["aliases"].get(item["id"], None) is None:
-                self.sub_factories["aliases"][item["id"]] = GoogleAlias(self.connection, {}, item["id"])
+                self.sub_factories["aliases"][item["id"]] = GoogleAlias(self.connection, self.interface, {}, item["id"])
             aliases_factory = self.sub_factories["aliases"][item["id"]]
             item = {
                 "ids": {

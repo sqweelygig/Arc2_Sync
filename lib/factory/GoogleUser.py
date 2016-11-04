@@ -2,9 +2,9 @@ from lib.factory.GoogleBase import GoogleBase
 
 
 class GoogleUser(GoogleBase):
-    def __init__(self, connection, item_settings, domain):
+    def __init__(self, connection, interface, item_settings, domain):
         try:
-            super().__init__(connection, item_settings)
+            super().__init__(connection, interface, item_settings)
         except NotImplementedError:
             pass
         self.domain = domain

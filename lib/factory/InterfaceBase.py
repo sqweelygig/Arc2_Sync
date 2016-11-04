@@ -2,9 +2,9 @@ from bin.Factory import Factory
 
 
 class InterfaceBase(Factory):
-    def __init__(self, connection, settings):
+    def __init__(self, connection, interface, settings):
         try:
-            super().__init__(connection, settings)
+            super().__init__(connection, interface, settings)
         except NotImplementedError:
             pass
 

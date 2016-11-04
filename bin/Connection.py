@@ -36,7 +36,7 @@ class Connection:
         item_name = alias(name)
         name = connection_name + item_name
         module = import_module("lib.factory." + name)
-        return getattr(module, name)(self, item_settings, **factory_settings)
+        return getattr(module, name)(self, self.interface, item_settings, **factory_settings)
 
 
 # from functools import partial

@@ -2,9 +2,9 @@ from lib.factory.SimsBase import SimsBase
 
 
 class SimsStaff(SimsBase):
-    def __init__(self, connection, item_settings):
+    def __init__(self, connection, interface, item_settings):
         try:
-            super().__init__(connection, item_settings)
+            super().__init__(connection, interface, item_settings)
         except NotImplementedError:
             pass
 

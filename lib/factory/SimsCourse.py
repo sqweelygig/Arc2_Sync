@@ -2,14 +2,14 @@ from lib.factory.SimsBase import SimsBase
 
 
 class SimsCourse(SimsBase):
-    def __init__(self, connection, item_settings):
+    def __init__(self, connection, interface, item_settings):
         from lib.factory.SimsStaff import SimsStaff
         try:
-            super().__init__(connection, item_settings)
+            super().__init__(connection, interface, item_settings)
         except NotImplementedError:
             pass
         self.sub_factories = {
-            "staff": SimsStaff(connection, {})
+            "staff": SimsStaff(connection, interface, {})
         }
 
     def fetch(self):
