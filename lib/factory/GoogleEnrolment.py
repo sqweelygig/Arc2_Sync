@@ -14,7 +14,10 @@ class GoogleEnrolment(GoogleBase):
         raise NotImplementedError
 
     def get_put_arguments(self, item):
+        item.details["course"].enrich(self.sub_factories["courses"].get(item.details["course"]))
+        item.details["student"].enrich(self.sub_factories["students"].get(item.details["student"]))
         return {
+            **self.get_common_arguments(),
             "courseId": item.details["course"].ids["google"],
             "body": {
                 "courseId": item.details["course"].ids["google"],

@@ -30,11 +30,11 @@ class Item:
                 return True
         return False
 
-    def __str__(self):
+    def __repr__(self):
         return {
             "ids": self.ids,
             "details": self.details,
-        }.__str__()
+        }.__repr__()
 
     def enrich(self, other):
         updates = {
@@ -44,7 +44,7 @@ class Item:
         for key in other.ids:
             if self.ids.get(key) != other.ids.get(key):
                 updates["ids"].append(key)
-                self.ids[key] = other.details[key]
+                self.ids[key] = other.ids[key]
         for key in other.details:
             if self.details.get(key) != other.details.get(key):
                 updates["details"].append(key)

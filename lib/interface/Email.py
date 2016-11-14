@@ -35,6 +35,7 @@ class Email(Interface):
         except NotImplementedError:
             pass
         self.send = True
+        self.reassure(output)
         self.body += output + "\r\n"
 
     def get(self, key=""):

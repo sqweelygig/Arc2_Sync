@@ -100,6 +100,7 @@ class Arc2Sync:
             sections_done_keys.add(section_focus)
         return matches
 
+    # noinspection PyBroadException
     def execute(self, matches):
         from datetime import datetime
         mode = self.settings.get("mode")
@@ -116,27 +117,36 @@ class Arc2Sync:
                 if match["source"] is None:
                     if match["target"].details.get("keep_until", None) is None \
                             or match["target"].details.get("keep_until") < datetime.now():
-                        self.interface.put("DELETE: " + str(match["target"]))
+                        self.interface.put("DELETE: " + repr(match["target"]))
                         if do:
-                            self.target_factory.delete(match["target"])
-                            self.interface.put("DONE.")
+                            try:
+                                self.target_factory.delete(match["target"])
+                                self.interface.put("DONE.")
+                            except Exception:
+                                self.interface.put("ERROR.")
 
         if mode in {"check", "sync", "make"}:
             for match in iter(matches):
                 if match["target"] is None:
-                    self.interface.put("CREATE: " + str(match["source"]))
+                    self.interface.put("CREATE: " + repr(match["source"]))
                     if do:
-                        self.target_factory.put(match["source"])
-                        self.interface.put("DONE.")
+                        try:
+                            self.target_factory.put(match["source"])
+                            self.interface.put("DONE.")
+                        except Exception:
+                            self.interface.put("ERROR.")
 
         if mode in {"check", "sync", "tweak", "fix"}:
             for match in iter(matches):
                 if match["target"] is not None and match["source"] is not None:
                     if self.target_factory.can_update(match["target"].enrich(match["source"])):
-                        self.interface.put("UPDATE: " + str(match["target"]))
+                        self.interface.put("UPDATE: " + repr(match["target"]))
                         if do:
-                            self.target_factory.patch(match["target"])
-                            self.interface.put("DONE.")
+                            try:
+                                self.target_factory.patch(match["target"])
+                                self.interface.put("DONE.")
+                            except Exception:
+                                self.interface.put("ERROR.")
 
 
 if __name__ == "__main__":
