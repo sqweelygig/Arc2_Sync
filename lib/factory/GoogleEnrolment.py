@@ -68,7 +68,7 @@ class GoogleEnrolment(GoogleBase):
         sims_id.update((course.ids["sims"] + ':' + student.ids["sims"]).encode('utf-8'))
         sims_id = sims_id.hexdigest()
         google_id = md5()
-        google_id.update((course.ids["google"] + ':' + course.ids["google"]).encode('utf-8'))
+        google_id.update((course.ids["google"] + ':' + student.ids["google"]).encode('utf-8'))
         google_id = google_id.hexdigest()
         item = {
             "ids": {
