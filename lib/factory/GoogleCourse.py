@@ -132,7 +132,7 @@ class GoogleCourse(GoogleBasePatch):
         from lib.item.Course import Course
         from lib.item.Staff import Staff
         item = super().map(item)
-        if item["courseState"] in {"ARCHIVED"} or not item["name"].startswith("07w/Sc1"):
+        if item["courseState"] in {"ARCHIVED"}:
             return None
         else:
             if self.sub_factories["aliases"].get(item["id"], None) is None:

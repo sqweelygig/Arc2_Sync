@@ -20,8 +20,6 @@ class SimsCourse(SimsBase):
         from lib.item.Staff import Staff
         from _md5 import md5
         item = super().map(item)
-        if not item.find("Class").text.startswith("07w/Sc1"):
-            return None
         m = md5()
         m.update(item.find("NI_x0020_Number").text.encode("utf-8"))
         item = {
