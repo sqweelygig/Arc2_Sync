@@ -27,6 +27,8 @@ class SimsEnrolment(SimsBase):
         student_id = item.find("Adno").text
         course = self.sub_factories["courses"].get(Course(ids={"sims": course_id}, partial=True))
         student = self.sub_factories["students"].get(Student(ids={"admissionnumber": student_id}, partial=True))
+        if course is None or student is None:
+            return None
         m = md5()
         m.update((course.ids["sims"] + ':' + student.ids["sims"]).encode('utf-8'))
         item = {
