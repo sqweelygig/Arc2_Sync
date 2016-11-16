@@ -27,6 +27,7 @@ class Connection:
         self.root_dir = root_dir
         if not path.exists(self.root_dir):
             makedirs(self.root_dir)
+        # Abstract class
         raise NotImplementedError()
 
     def build_factory(self, name, factory_settings, item_settings):

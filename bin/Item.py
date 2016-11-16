@@ -20,6 +20,7 @@ class Item:
                     raise IndexError
         self.ids = ids
         self.details = details
+        # Abstract class
         raise NotImplementedError()
 
     def __eq__(self, other):

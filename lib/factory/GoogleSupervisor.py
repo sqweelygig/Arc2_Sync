@@ -5,12 +5,15 @@ from lib.factory.GoogleStaff import GoogleStaff
 
 class GoogleSupervisor(GoogleBase):
     def get_list_arguments(self):
+        # Uses non-standard fetch function
         raise NotImplementedError
 
     def get_delete_arguments(self, item):
+        # Not yet implemented
         raise NotImplementedError
 
     def get_patch_arguments(self, item):
+        # Nothing may be updated
         raise NotImplementedError
 
     def get_put_arguments(self, item):

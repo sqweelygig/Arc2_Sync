@@ -10,6 +10,7 @@ class SimsBase(FactoryReadOnly):
         self.items = None
 
     def fetch(self):
+        # Abstract method
         raise NotImplementedError
 
     def map(self, item):

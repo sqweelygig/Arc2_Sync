@@ -29,6 +29,14 @@ class Arc2Sync:
         target_factory_settings = self.settings.get_many(
             get_factory_requirements(self.settings.get("to"), self.settings.get("sync"))
         )
+        """
+            sync  = perform all tasks
+            fix   = manually reconcile mismatches
+            check = preview all tasks
+            tweak = only update
+            make  = only create
+            purge = only delete
+        """
         self.settings.get("mode", '^(sync|fix|check|tweak|make|purge)$')
         self.settings.get("root_dir")
 

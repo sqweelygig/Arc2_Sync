@@ -15,12 +15,15 @@ class GoogleAlias(GoogleBase):
         }
 
     def get_delete_arguments(self, item):
+        # An alias should not be deleted
         raise NotImplementedError
 
     def get_patch_arguments(self, item):
+        # An alias should not be updated
         raise NotImplementedError
 
     def get_put_arguments(self, item):
+        # Aliases are created as part of the course creation
         raise NotImplementedError
 
     def map(self, item):

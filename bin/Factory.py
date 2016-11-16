@@ -18,6 +18,7 @@ class FactoryReadOnly:
         self.interface = interface
         self.items = None
         self.indexed_items = None
+        # Abstract class
         raise NotImplementedError
 
     @staticmethod
@@ -49,9 +50,11 @@ class FactoryReadOnly:
         return output
 
     def fetch(self):
+        # Abstract method
         raise NotImplementedError
 
     def map(self, item):
+        # Abstract method
         raise NotImplementedError
 
     def can_update(self, update):
@@ -75,19 +78,25 @@ class Factory(FactoryReadOnly):
             super().__init__(connection, interface, item_settings)
         except NotImplementedError:
             pass
+        # Abstract class
         raise NotImplementedError
 
     def put(self, item):
+        # Abstract method
         raise NotImplementedError
 
     def delete(self, item):
+        # Abstract method
         raise NotImplementedError
 
     def patch(self, item):
+        # Abstract method
         raise NotImplementedError
 
     def map(self, item):
+        # Abstract method
         raise NotImplementedError
 
     def fetch(self):
+        # Abstract method
         raise NotImplementedError

@@ -29,15 +29,19 @@ class Interface:
     """
 
     def __init__(self):
+        # Abstract class
         raise NotImplementedError()
 
     def put(self, output=""):
+        # Abstract method
         raise NotImplementedError()
 
     def get(self, key=""):
+        # Abstract method
         raise NotImplementedError()
 
     def reassure(self, output=""):
+        # Abstract method
         raise NotImplementedError()
 
     @staticmethod
@@ -72,6 +76,7 @@ class InterfaceAntiWhizz(Interface):
         except NotImplementedError:
             pass
         self.verbosity = self.verbosity_options.get(verbosity)
+        # Abstract class
         raise NotImplementedError()
 
     def put(self, output=""):
@@ -81,6 +86,7 @@ class InterfaceAntiWhizz(Interface):
         self._put(output)
 
     def _put(self, output=""):
+        # Abstract method
         raise NotImplementedError()
 
     def get(self, key=""):
@@ -90,6 +96,7 @@ class InterfaceAntiWhizz(Interface):
         return value
 
     def _get(self, key=""):
+        # Abstract method
         raise NotImplementedError()
 
     def reassure(self, output=""):

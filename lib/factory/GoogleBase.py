@@ -15,15 +15,19 @@ class GoogleBase(Factory):
         self.connection.insert(**self.get_put_arguments(item))
 
     def get_list_arguments(self):
+        # Abstract method
         raise NotImplementedError
 
     def get_patch_arguments(self, item):
+        # Abstract method
         raise NotImplementedError
 
     def get_delete_arguments(self, item):
+        # Abstract method
         raise NotImplementedError
 
     def get_put_arguments(self, item):
+        # Abstract method
         raise NotImplementedError
 
     def __init__(self, connection, interface, settings):

@@ -11,6 +11,7 @@ class GoogleEnrolment(GoogleBase):
             item.details["student"].enrich(self.sub_factories["courses"].get(item.details["course"]))
 
     def get_list_arguments(self):
+        # Uses non-standard fetch function
         raise NotImplementedError
 
     def get_delete_arguments(self, item):
@@ -22,6 +23,7 @@ class GoogleEnrolment(GoogleBase):
         }
 
     def get_patch_arguments(self, item):
+        # Nothing can be updated
         raise NotImplementedError
 
     def get_put_arguments(self, item):

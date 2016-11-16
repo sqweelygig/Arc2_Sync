@@ -44,6 +44,7 @@ class Email(Interface):
         except NotImplementedError:
             pass
         self.put(key+"?")
+        # There is no way of interrogating an e-mail address
         raise NotImplementedError
 
     def __del__(self):

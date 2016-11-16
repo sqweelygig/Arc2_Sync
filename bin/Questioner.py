@@ -10,6 +10,7 @@ class Questioner:
 
     def __init__(self):
         self.cache = {}
+        # Abstract class
         raise NotImplementedError()
 
     def get(self, key, criteria='^.+$'):
@@ -26,6 +27,7 @@ class Questioner:
         return out
 
     def _get(self, key):
+        # Abstract method
         raise NotImplementedError()
 
 
