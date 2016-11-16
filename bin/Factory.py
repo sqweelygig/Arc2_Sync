@@ -27,12 +27,7 @@ class FactoryReadOnly:
 
     def get(self, find):
         if self.indexed_items is None:
-            self.indexed_items = {}
-            for item in self.list():
-                for id_key in item.ids:
-                    if self.indexed_items.get(id_key, None) is None:
-                        self.indexed_items[id_key] = {}
-                    self.indexed_items[id_key][item.ids[id_key]] = item
+            self.list()
         output = None
         for id_key in find.ids:
             output = output or self.indexed_items[id_key].get(find.ids[id_key], None)
@@ -42,11 +37,20 @@ class FactoryReadOnly:
         if self.items is None:
             self.items = self.fetch()
         output = []
+        self.indexed_items = {}
         for item in self.items:
             value = self.map(item)
             if value is not None:
-                output.append(value)
-                self.interface.reassure(str(value))
+                if len(value.ids) > 0:
+                    for id_key in value.ids:
+                        if self.indexed_items.get(id_key, None) is None:
+                            self.indexed_items[id_key] = {}
+                        if self.indexed_items[id_key].get(value.ids[id_key], None) is None:
+                            self.indexed_items[id_key][value.ids[id_key]] = value
+                            output.append(value)
+                            self.interface.reassure(str(value))
+                else:
+                    output.append(value)
         return output
 
     def fetch(self):
