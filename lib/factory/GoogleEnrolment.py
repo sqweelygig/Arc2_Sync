@@ -4,18 +4,28 @@ from lib.factory.GoogleStudent import GoogleStudent
 
 
 class GoogleEnrolment(GoogleBase):
+    def populate_ids(self, item):
+        if "google" not in item.details["course"].ids:
+            item.details["course"].enrich(self.sub_factories["courses"].get(item.details["course"]))
+        if "google" not in item.details["student"].ids:
+            item.details["student"].enrich(self.sub_factories["courses"].get(item.details["course"]))
+
     def get_list_arguments(self):
         raise NotImplementedError
 
     def get_delete_arguments(self, item):
-        raise NotImplementedError
+        self.populate_ids(item)
+        return {
+            **self.get_common_arguments(),
+            "courseId": item.details["course"].ids["google"],
+            "userId": item.details["student"].ids["google"],
+        }
 
     def get_patch_arguments(self, item):
         raise NotImplementedError
 
     def get_put_arguments(self, item):
-        item.details["course"].enrich(self.sub_factories["courses"].get(item.details["course"]))
-        item.details["student"].enrich(self.sub_factories["students"].get(item.details["student"]))
+        self.populate_ids(item)
         return {
             **self.get_common_arguments(),
             "courseId": item.details["course"].ids["google"],
