@@ -60,8 +60,17 @@ class Google(Connection):
                 if errors > 10:
                     raise
 
-    # def delete(self, endpoint, version, path, **kwargs):
-        # self.get_service(endpoint, version, path).delete(**kwargs).execute()
+    def delete(self, endpoint, version, path, **kwargs):
+        errors = 0
+        to_send = True
+        while to_send:
+            try:
+                self.get_service(endpoint, version, path).delete(**kwargs).execute()
+                to_send = False
+            except HttpError:
+                errors += 1
+                if errors > 10:
+                    raise
 
     def insert(self, endpoint, version, path, **kwargs):
         errors = 0

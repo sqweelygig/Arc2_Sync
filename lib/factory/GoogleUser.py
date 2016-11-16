@@ -1,7 +1,7 @@
-from lib.factory.GoogleBase import GoogleBase
+from lib.factory.GoogleBase import GoogleBasePatch
 
 
-class GoogleUser(GoogleBase):
+class GoogleUser(GoogleBasePatch):
     def __init__(self, connection, interface, item_settings, domain):
         try:
             super().__init__(connection, interface, item_settings)
@@ -11,7 +11,7 @@ class GoogleUser(GoogleBase):
 
     @staticmethod
     def get_requirements():
-        return GoogleBase.get_requirements() | {"domain"}
+        return GoogleBasePatch.get_requirements() | {"domain"}
 
     @staticmethod
     def get_common_arguments():

@@ -1,10 +1,10 @@
 from googleapiclient.errors import HttpError
 from bin.Item import Item
-from lib.factory.GoogleBase import GoogleBase
+from lib.factory.GoogleBase import GoogleBasePatch
 from lib.factory.GoogleStaff import GoogleStaff
 
 
-class GoogleAlias(GoogleBase):
+class GoogleAlias(GoogleBasePatch):
     def get_list_arguments(self):
         return {
             "endpoint": "classroom",
@@ -38,7 +38,7 @@ class GoogleAlias(GoogleBase):
 
     @staticmethod
     def get_requirements():
-        return GoogleBase.get_requirements() | {"course_id"}
+        return GoogleBasePatch.get_requirements() | {"course_id"}
 
     def __init__(self, connection, interface, item_settings, course_id):
         try:
@@ -57,7 +57,7 @@ class Alias(Item):
 
 
 # TODO Make this understand archived
-class GoogleCourse(GoogleBase):
+class GoogleCourse(GoogleBasePatch):
     def __init__(self, connection, interface, item_settings, domain):
         try:
             super().__init__(connection, interface, item_settings)
@@ -132,7 +132,7 @@ class GoogleCourse(GoogleBase):
         from lib.item.Course import Course
         from lib.item.Staff import Staff
         item = super().map(item)
-        if item["courseState"] in {"ARCHIVED"}:
+        if item["courseState"] in {"ARCHIVED"} or not item["name"].startswith("07w/Sc1"):
             return None
         else:
             if self.sub_factories["aliases"].get(item["id"], None) is None:

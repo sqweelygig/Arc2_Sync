@@ -1,9 +1,9 @@
-from lib.factory.GoogleBase import GoogleBase
+from lib.factory.GoogleBase import GoogleBaseDelete
 from lib.factory.GoogleCourse import GoogleCourse
 from lib.factory.GoogleStudent import GoogleStudent
 
 
-class GoogleEnrolment(GoogleBase):
+class GoogleEnrolment(GoogleBaseDelete):
     def populate_ids(self, item):
         if "google" not in item.details["course"].ids:
             item.details["course"].enrich(self.sub_factories["courses"].get(item.details["course"]))

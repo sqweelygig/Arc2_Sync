@@ -9,7 +9,7 @@ class GoogleBase(Factory):
         self.connection.patch(**self.get_patch_arguments(item))
 
     def delete(self, item):
-        self.connection.patch(**self.get_delete_arguments(item))
+        raise NotImplementedError
 
     def put(self, item):
         self.connection.insert(**self.get_put_arguments(item))
@@ -38,3 +38,37 @@ class GoogleBase(Factory):
 
     def unmap(self, item):
         return item
+
+
+class GoogleBasePatch(GoogleBase):
+    def get_put_arguments(self, item):
+        raise NotImplementedError
+
+    def get_list_arguments(self):
+        raise NotImplementedError
+
+    def get_patch_arguments(self, item):
+        raise NotImplementedError
+
+    def get_delete_arguments(self, item):
+        raise NotImplementedError
+
+    def delete(self, item):
+        self.connection.patch(**self.get_delete_arguments(item))
+
+
+class GoogleBaseDelete(GoogleBase):
+    def get_put_arguments(self, item):
+        raise NotImplementedError
+
+    def get_list_arguments(self):
+        raise NotImplementedError
+
+    def get_patch_arguments(self, item):
+        raise NotImplementedError
+
+    def get_delete_arguments(self, item):
+        raise NotImplementedError
+
+    def delete(self, item):
+        self.connection.delete(**self.get_delete_arguments(item))
