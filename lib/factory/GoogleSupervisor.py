@@ -71,7 +71,7 @@ class GoogleSupervisor(GoogleBase):
     def map(self, item):
         from lib.item.Course import Course
         from lib.item.Staff import Staff
-        from lib.item.Enrolment import Enrolment
+        from lib.item.Supervisor import Supervisor
         from _md5 import md5
         course = self.sub_factories["courses"].get(Course(ids={"google": item["courseId"]}, partial=True))
         supervisor = self.sub_factories["staff"].get(Staff(ids={"google": item["userId"]}, partial=True))
@@ -93,7 +93,7 @@ class GoogleSupervisor(GoogleBase):
                 "course": course,
             },
         }
-        return Enrolment(**item)
+        return Supervisor(**item)
 
     @staticmethod
     def get_requirements():
