@@ -42,15 +42,19 @@ class FactoryReadOnly:
             value = self.map(item)
             if value is not None:
                 if len(value.ids) > 0:
+                    append = False
                     for id_key in value.ids:
                         if self.indexed_items.get(id_key, None) is None:
                             self.indexed_items[id_key] = {}
                         if self.indexed_items[id_key].get(value.ids[id_key], None) is None:
                             self.indexed_items[id_key][value.ids[id_key]] = value
-                            output.append(value)
-                            self.interface.reassure(str(value))
+                            append = True
+                    if append:
+                        output.append(value)
+                        self.interface.reassure(str(value))
                 else:
                     output.append(value)
+                    self.interface.reassure(str(value))
         return output
 
     def fetch(self):
