@@ -4,6 +4,12 @@ from lib.factory.GoogleStaff import GoogleStaff
 
 
 class GoogleSupervisor(GoogleBase):
+    def populate_ids(self, item):
+        if "google" not in item.details["course"].ids:
+            item.details["course"].enrich(self.sub_factories["courses"].get(item.details["course"]))
+        if "google" not in item.details["supervisor"].ids:
+            item.details["supervisor"].enrich(self.sub_factories["staff"].get(item.details["supervisor"]))
+
     def get_list_arguments(self):
         # Uses non-standard fetch function
         raise NotImplementedError
@@ -17,8 +23,7 @@ class GoogleSupervisor(GoogleBase):
         raise NotImplementedError
 
     def get_put_arguments(self, item):
-        item.details["course"].enrich(self.sub_factories["courses"].get(item.details["course"]))
-        item.details["supervisor"].enrich(self.sub_factories["staff"].get(item.details["supervisor"]))
+        self.populate_ids(item)
         return {
             **self.get_common_arguments(),
             "courseId": item.details["course"].ids["google"],
