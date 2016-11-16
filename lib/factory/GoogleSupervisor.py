@@ -47,6 +47,10 @@ class GoogleSupervisor(GoogleBase):
         output = []
         courses = self.sub_factories["courses"].list()
         for course in courses:
+            output.append({
+                "courseId": course.ids["google"],
+                "userId": course.details["teacher"].ids["google"]
+            })
             for teacher in self.connection.list(
                     **self.get_common_arguments(),
                     courseId=course.ids["google"],
