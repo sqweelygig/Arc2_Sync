@@ -102,7 +102,7 @@ class Arc2Sync:
                         if item_focus == item_possible:
                             match[section_possible_key] = item_possible
                             candidates[section_possible_key].remove(item_possible)
-                            self.interface.reassure("Paired " + str(len(matches)) + " items")
+                            self.interface.reassure("Pair [" + str(len(matches)) + "]")
                             break
                 matches.append(match)
             sections_done_keys.add(section_focus)
