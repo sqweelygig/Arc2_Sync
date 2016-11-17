@@ -111,6 +111,15 @@ class Arc2Sync:
     # noinspection PyBroadException
     def execute(self, matches):
         from datetime import datetime
+
+        self.interface.put(
+            self.settings.get("mode") +
+            " " + self.settings.get("sync") +
+            " from " + self.settings.get("from") +
+            " to " + self.settings.get("to"),
+            False
+        )
+
         mode = self.settings.get("mode")
         do = mode not in {"check"}
 

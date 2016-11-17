@@ -29,12 +29,12 @@ class Email(Interface):
         from time import strftime
         print(strftime("%c") + " - " + output)
 
-    def put(self, output=""):
+    def put(self, output="", is_content=True):
         try:
             super().put(output)
         except NotImplementedError:
             pass
-        self.send = True
+        self.send = self.send or is_content
         self.reassure(output)
         self.body += output + "\r\n"
 

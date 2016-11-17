@@ -32,7 +32,7 @@ class Interface:
         # Abstract class
         raise NotImplementedError()
 
-    def put(self, output=""):
+    def put(self, output="", is_content=True):
         # Abstract method
         raise NotImplementedError()
 
@@ -79,7 +79,7 @@ class InterfaceAntiWhizz(Interface):
         # Abstract class
         raise NotImplementedError()
 
-    def put(self, output=""):
+    def put(self, output="", is_content=True):
         from time import time
         sleep(max(0, self.last_interacted + self.verbosity.get("put") - time()))
         self.last_interacted = time()
