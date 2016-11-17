@@ -5,11 +5,11 @@ Crazy Idea
 cartesian product these together
 find the longest that is less than 13 (11) characters
 eg:
-Bay-Leigh Philips-Waterman
-==> forenames = bay-leigh, bay-l, b-l
-==> surnames = philips-waterman, p-waterman, p-w
-==> suggestions = bay-leigh.philips-waterman, bay-l.philips-waterman, b-l.philips-waterman,
-                  bay-leigh.p-waterman      , bay-l.p-waterman      , b-l.p-waterman,
-                  bay-leigh.p-w             , bay-l.p-w             , b-l.p-w
-==> filtered = bay-leigh.p-w, bay-l.p-w, b-l.p-w
-==> ordered = bay-leigh.p-w, bay-l.p-w, b-l.p-w
+John-Paul Lennon-McCartney
+==> forenames = john-paul, john-p, j-p
+==> surnames = lennon-mccartney, l-mccartney, l-m
+==> suggestions = john-paul.lennon-mccartney, john-p.lennon-mccartney, j-p.lennon-mccartney,
+                  john-paul.l-mccartney     , john-p.l-mccartney     , j-p.l-mccartney,
+                  john-paul.l-m             , john-p.l-m             , j-p.l-m
+==> filtered = john-paul.l-m, john-p.l-m, j-p.l-m
+==> ordered = john-paul.l-m, john-p.l-m, j-p.l-m
