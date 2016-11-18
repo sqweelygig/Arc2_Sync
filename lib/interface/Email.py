@@ -1,51 +1,20 @@
 from smtplib import SMTP
 from time import strftime
 
-from bin.Interface import Interface
+from lib.interface.Relay import Relay
 
 
-class Email(Interface):
-    def __init__(self, mail_to, mail_server, mail_username, mail_password):
-        try:
-            super().__init__()
-        except NotImplementedError:
-            pass
-        self.to_address = mail_to
-        self.server = mail_server
-        self.username = mail_username
+class Email(Relay):
+    def get(self, key=""):
+        super().get(key)
+
+    def __init__(self, mail_to, mail_server, mail_from, mail_password):
+        super().__init__(mail_to, mail_server, mail_from)
         self.password = mail_password
-        self.body = strftime('%c') + "\r\n"
-        self.send = False
 
     @staticmethod
     def get_requirements():
-        return Interface.get_requirements() | {"mail_to", "mail_server", "mail_username", "mail_password"}
-
-    def reassure(self, output=""):
-        try:
-            super().reassure(output)
-        except NotImplementedError:
-            pass
-        from time import strftime
-        print(strftime("%c") + " - " + output)
-
-    def put(self, output="", is_content=True):
-        try:
-            super().put(output)
-        except NotImplementedError:
-            pass
-        self.send = self.send or is_content
-        self.reassure(output)
-        self.body += output + "\r\n"
-
-    def get(self, key=""):
-        try:
-            super().get(key)
-        except NotImplementedError:
-            pass
-        self.put(key+"?")
-        # There is no way of interrogating an e-mail address
-        raise NotImplementedError
+        return Relay.get_requirements() | {"mail_password"}
 
     def __del__(self):
         if self.send:
@@ -53,12 +22,12 @@ class Email(Interface):
             server = SMTP(self.server)
             server.ehlo()
             server.starttls()
-            server.login(self.username, self.password)
+            server.login(self.mail_from, self.password)
             msg = "\r\n".join([
-                "From: " + self.username,
+                "From: " + self.mail_from,
                 "To: " + self.to_address,
                 "Subject: Arc Synchronise Results",
                 "",
                 self.body,
             ])
-            server.sendmail(self.username, self.to_address, msg.encode('utf-8'))
+            server.sendmail(self.mail_from, self.to_address, msg.encode('utf-8'))
